@@ -1,25 +1,23 @@
 /**
  * ============================================================
- * FILE: POS.jsx — Trang Bán hàng (Point of Sale)
+ * FILE: POS.jsx — Trang Bán hàng tại quầy (Point of Sale)
  * ============================================================
+ * Chức năng:
+ *   Nhân viên bán hàng sử dụng trang này để:
+ *   - Tìm kiếm thuốc theo tên, thành phần hoặc quét mã vạch (barcode)
+ *   - Thêm thuốc vào giỏ hàng với đơn vị tính linh hoạt (viên/vỉ/hộp)
+ *   - Tra cứu khách hàng bằng SĐT hoặc đăng ký khách mới
+ *   - Thanh toán (tiền mặt / chuyển khoản) và in hóa đơn
  *
- * 1. Mục tiêu chung:
- *    Trang này giải quyết bài toán BÁN HÀNG TẠI QUẦY của nhà thuốc.
- *    Nhân viên bán hàng có thể:
- *    - Tìm kiếm thuốc theo tên, thành phần, hoặc quét mã vạch (barcode)
- *    - Thêm thuốc vào giỏ hàng với đơn vị tính linh hoạt (viên/vỉ/hộp)
- *    - Tra cứu khách hàng bằng SĐT hoặc đăng ký khách mới
- *    - Áp dụng điểm tích lũy để giảm giá
- *    - Thanh toán (tiền mặt / chuyển khoản) và in hóa đơn
+ * Bố cục giao diện: 3 cột
+ *   Cột trái (44%)  — Danh mục sản phẩm + Tìm kiếm
+ *   Cột giữa (32%)  — Giỏ hàng hiện tại
+ *   Cột phải (24%)  — Thông tin khách hàng + Thanh toán
  *
- * 2. Tư duy cốt lõi (Ý tưởng thuật toán):
- *    - Layout 3 cột: Catalog (trái) | Giỏ hàng (giữa) | Thanh toán (phải)
- *    - useMemo() cho filteredProducts: chỉ lọc lại khi searchTerm thay đổi,
- *      không lọc lại khi thao tác giỏ hàng hay nhập SĐT khách hàng.
- *    - "Lookup Map" cho sản phẩm: tra cứu O(1) khi cần tìm thông tin.
- *    - DRY (Don't Repeat Yourself): resolveProduct() tách logic tìm sản phẩm
- *      dùng chung cho receipt modal (tránh lặp code).
- *    - Quy đổi đơn vị: 1 Hộp = n Vỉ = m Viên, dùng conversionFactor.
+ * Các kỹ thuật chính:
+ *   - useMemo: Chỉ lọc/tính toán lại khi dữ liệu đầu vào thay đổi
+ *   - Map (bảng băm): Tra cứu sản phẩm nhanh O(1) thay vì duyệt mảng O(n)
+ *   - Quy đổi đơn vị: 1 Hộp = n Vỉ = m Viên, dùng conversionFactor
  * ============================================================
  */
 import React, { useState, useEffect, useRef } from 'react';
@@ -31,21 +29,20 @@ import {
 import axios from '../api/axios';
 
 const POS = () => {
-  // Global & Local States
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cart, setCart] = useState([]);
 
-  /* Nhân viên đang đăng nhập — đọc từ localStorage.
-   *
-   * TỐI ƯU: Dùng useState(() => ...) với "hàm khởi tạo" (initializer function).
-   * Hàm khởi tạo chỉ chạy 1 LẦN DUY NHẤT khi component mount lần đầu.
-   *
-   * SO SÁNH với code cũ dùng IIFE (Immediately Invoked Function Expression):
-   * - Code cũ: const x = (() => { ... })();  → chạy lại MỖI LẦN component render
-   * - Code mới: const [x] = useState(() => { ... }); → chỉ chạy 1 lần
-   *
-   * Kết quả: Tránh parse JSON từ localStorage lặp lại vô ích mỗi render.
+  // =============================================
+  // PHẦN 1: KHAI BÁO CÁC BIẾN TRẠNG THÁI (STATE)
+  // =============================================
+
+  // --- Dữ liệu sản phẩm & Giỏ hàng ---
+  const [products, setProducts] = useState([]);     // Danh sách sản phẩm lấy từ Backend
+  const [searchTerm, setSearchTerm] = useState('');  // Từ khóa tìm kiếm sản phẩm
+  const [cart, setCart] = useState([]);               // Giỏ hàng hiện tại
+
+  /**
+   * Đọc thông tin nhân viên đang đăng nhập từ LocalStorage.
+   * Dùng useState(() => ...) với hàm khởi tạo → chỉ chạy 1 LẦN khi component hiển thị lần đầu.
+   * Tránh parse JSON lặp lại mỗi khi component render.
    */
   const [activeEmployee] = useState(() => {
     const saved = localStorage.getItem('activeEmployee');
@@ -56,122 +53,55 @@ const POS = () => {
     }
   });
 
-  // Customer Search & Creation States
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [customer, setCustomer] = useState(null);
-  const [customerSearchMsg, setCustomerSearchMsg] = useState('');
-  const [showAddCustomer, setShowAddCustomer] = useState(false);
-  const [newCustLastName, setNewCustLastName] = useState('Nguyễn');
-  const [newCustFirstName, setNewCustFirstName] = useState('');
-  const [newCustPhone, setNewCustPhone] = useState('');
-  const [addCustomerError, setAddCustomerError] = useState('');
+  // --- Tra cứu & Tạo mới Khách hàng ---
+  const [customerPhone, setCustomerPhone] = useState('');       // SĐT khách hàng nhập vào
+  const [customer, setCustomer] = useState(null);               // Thông tin khách hàng tìm được
+  const [customerSearchMsg, setCustomerSearchMsg] = useState(''); // Thông báo kết quả tìm kiếm
+  const [showAddCustomer, setShowAddCustomer] = useState(false); // Hiển thị form thêm khách mới
+  const [newCustLastName, setNewCustLastName] = useState('Nguyễn'); // Họ đệm khách mới
+  const [newCustFirstName, setNewCustFirstName] = useState('');     // Tên khách mới
+  const [newCustPhone, setNewCustPhone] = useState('');             // SĐT khách mới
+  const [addCustomerError, setAddCustomerError] = useState('');     // Lỗi khi tạo khách
 
-  // Payment states
-  const [isBankTransfer, setIsBankTransfer] = useState(false);
-  const [redeemedPoints, setRedeemedPoints] = useState(0);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState('');
+  // --- Thanh toán ---
+  const [isBankTransfer, setIsBankTransfer] = useState(false);  // true = Chuyển khoản, false = Tiền mặt
+  const [checkoutLoading, setCheckoutLoading] = useState(false); // Đang xử lý thanh toán
+  const [checkoutError, setCheckoutError] = useState('');        // Lỗi khi thanh toán
 
-  // Receipt Modal State
-  const [showReceiptModal, setShowReceiptModal] = useState(false);
-  const [lastInvoice, setLastInvoice] = useState(null);
+  // --- Modal hóa đơn sau thanh toán ---
+  const [showReceiptModal, setShowReceiptModal] = useState(false); // Hiển thị modal hóa đơn
+  const [lastInvoice, setLastInvoice] = useState(null);            // Dữ liệu hóa đơn vừa tạo
 
-  // Search input focus ref
+  // --- Thông báo khi quét mã vạch ---
+  const [toastMessage, setToastMessage] = useState('');
+
+  // Ref để focus vào ô tìm kiếm
   const searchInputRef = useRef(null);
 
-  // >>> MOCK PRODUCTS - XÓA ĐOẠN NÀY KHI CÓ BACKEND >>>
-  const MOCK_PRODUCTS = [
-    {
-      id: 'SP001',
-      name: 'Paracetamol 500mg',
-      type: 'THUOC_KHONG_KE_DON',
-      ingredients: 'Paracetamol',
-      barcodes: ['893460200101'],
-      totalQuantity: 500,
-      batches: [
-        { batchId: 'LO-2025-001', expDate: '2026-12-31', quantity: 300 },
-        { batchId: 'LO-2025-002', expDate: '2027-06-15', quantity: 200 }
-      ],
-      units: [
-        { unitId: 'U1', name: 'Viên', price: 2000, conversionFactor: 1, isBase: true },
-        { unitId: 'U2', name: 'Vỉ (10 viên)', price: 18000, conversionFactor: 10 },
-        { unitId: 'U3', name: 'Hộp (10 vỉ)', price: 170000, conversionFactor: 100 }
-      ]
-    },
-    {
-      id: 'SP002',
-      name: 'Amoxicillin 500mg',
-      type: 'THUOC_KE_DON',
-      ingredients: 'Amoxicillin trihydrate',
-      barcodes: ['893460200102'],
-      totalQuantity: 200,
-      batches: [
-        { batchId: 'LO-2025-003', expDate: '2026-09-30', quantity: 200 }
-      ],
-      units: [
-        { unitId: 'U1', name: 'Viên', price: 5000, conversionFactor: 1, isBase: true },
-        { unitId: 'U2', name: 'Vỉ (10 viên)', price: 45000, conversionFactor: 10 },
-        { unitId: 'U3', name: 'Hộp (2 vỉ)', price: 85000, conversionFactor: 20 }
-      ]
-    },
-    {
-      id: 'SP003',
-      name: 'Vitamin C 1000mg Effervescent',
-      type: 'THUC_PHAM_CHUC_NANG',
-      ingredients: 'Acid ascorbic, Kẽm gluconate',
-      barcodes: ['893460200103'],
-      totalQuantity: 150,
-      batches: [
-        { batchId: 'LO-2025-004', expDate: '2027-03-20', quantity: 150 }
-      ],
-      units: [
-        { unitId: 'U1', name: 'Viên', price: 8000, conversionFactor: 1, isBase: true },
-        { unitId: 'U2', name: 'Tuýp (10 viên)', price: 75000, conversionFactor: 10 }
-      ]
-    },
-    {
-      id: 'SP004',
-      name: 'Omeprazole 20mg',
-      type: 'THUOC_KHONG_KE_DON',
-      ingredients: 'Omeprazole',
-      barcodes: ['893460200104'],
-      totalQuantity: 300,
-      batches: [
-        { batchId: 'LO-2025-005', expDate: '2026-08-15', quantity: 180 },
-        { batchId: 'LO-2025-006', expDate: '2027-01-10', quantity: 120 }
-      ],
-      units: [
-        { unitId: 'U1', name: 'Viên', price: 3500, conversionFactor: 1, isBase: true },
-        { unitId: 'U2', name: 'Vỉ (10 viên)', price: 32000, conversionFactor: 10 },
-        { unitId: 'U3', name: 'Hộp (3 vỉ)', price: 90000, conversionFactor: 30 }
-      ]
-    },
-    {
-      id: 'SP005',
-      name: 'Ibuprofen 400mg',
-      type: 'THUOC_KHONG_KE_DON',
-      ingredients: 'Ibuprofen',
-      barcodes: ['893460200105'],
-      totalQuantity: 400,
-      batches: [
-        { batchId: 'LO-2025-007', expDate: '2027-05-20', quantity: 400 }
-      ],
-      units: [
-        { unitId: 'U1', name: 'Viên', price: 3000, conversionFactor: 1, isBase: true },
-        { unitId: 'U2', name: 'Vỉ (10 viên)', price: 28000, conversionFactor: 10 },
-        { unitId: 'U3', name: 'Hộp (5 vỉ)', price: 130000, conversionFactor: 50 }
-      ]
-    }
-  ];
-  // <<< MOCK PRODUCTS - XÓA ĐOẠN NÀY KHI CÓ BACKEND <<<
+  // =============================================
+  // PHẦN 2: TẢI DỮ LIỆU SẢN PHẨM TỪ BACKEND
+  // =============================================
 
+  /**
+   * loadProducts — Tải danh sách sản phẩm từ Backend
+   *
+   * Cách hoạt động:
+   *   1. Gọi GET /api/products để lấy danh sách sản phẩm
+   *   2. Tính tổng tồn kho (totalQuantity) cho mỗi sản phẩm bằng cách
+   *      cộng dồn quantity của tất cả các lô hàng (batches)
+   *   3. Lưu vào state products để hiển thị trên giao diện
+   */
   const loadProducts = async () => {
     try {
       const res = await axios.get('/api/products');
-      // Kiểm tra dữ liệu trả về có phải mảng không (Vite dev server có thể trả HTML)
+
+      // Kiểm tra dữ liệu trả về có phải mảng không
       if (Array.isArray(res.data)) {
+        // Tính tổng tồn kho cho mỗi sản phẩm
         const processedProducts = res.data.map(prod => {
-          const totalQuantity = (prod.batches || []).reduce((sum, batch) => sum + (batch.quantity || 0), 0);
+          const totalQuantity = (prod.batches || []).reduce(
+            (sum, batch) => sum + (batch.quantity || 0), 0
+          );
           return { ...prod, totalQuantity };
         });
         setProducts(processedProducts);
@@ -179,48 +109,46 @@ const POS = () => {
         throw new Error('API trả về dữ liệu không hợp lệ');
       }
     } catch (err) {
-      console.warn('API chưa sẵn sàng, sử dụng dữ liệu mẫu:', err.message);
-      // >>> MOCK FALLBACK - XÓA DÒNG NÀY KHI CÓ BACKEND >>>
-      setProducts(MOCK_PRODUCTS);
-      // <<< MOCK FALLBACK - XÓA DÒNG NÀY KHI CÓ BACKEND <<<
+      console.warn('Không thể tải danh sách sản phẩm:', err.message);
     }
   };
 
-  // Tải danh sách sản phẩm lần đầu khi component được hiển thị (mount)
+  // Tải danh sách sản phẩm khi component hiển thị lần đầu
   useEffect(() => {
     loadProducts();
   }, []);
 
-  /* ============================================================
-   * MODULE: Lookup Map & resolveProduct — Tra cứu sản phẩm nhanh
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Tạo bảng tra cứu sản phẩm O(1) và hàm helper tìm sản phẩm
-   *    từ nhiều nguồn ID (productId / unitId). Dùng trong receipt modal.
-   *
-   * 2. Tư duy cốt lõi:
-   *    - Map<productId, product>: tra cứu tức thì O(1)
-   *    - resolveProduct(): chiến lược "thử lần lượt" (fallback chain):
-   *      Cách 1 thất bại → thử Cách 2 → thất bại → thử Cách 3
-   * ============================================================ */
-
-  // Map tra cứu: productId → object sản phẩm đầy đủ
-  const productMap = React.useMemo(() => {
-    const map = new Map();                          // Tạo Map rỗng
-    products.forEach(prod => map.set(prod.id, prod)); // Nạp sản phẩm vào
-    return map;
-  }, [products]); // Chỉ xây lại khi danh sách sản phẩm thay đổi
+  // =============================================
+  // PHẦN 3: BẢNG TRA CỨU SẢN PHẨM NHANH (MAP)
+  // =============================================
 
   /**
-   * Tìm sản phẩm gốc từ thông tin chi tiết hóa đơn.
-   * Vì backend có thể trả về productId hoặc chỉ có unitId,
-   * ta cần thử nhiều cách khác nhau.
+   * productMap — Bảng tra cứu sản phẩm theo ID, truy xuất O(1)
    *
-   * @param {Object} detail - 1 dòng chi tiết hóa đơn (có productId và/hoặc unitId)
+   * Cấu trúc: Map<productId, product>
+   * VD: productMap.get("SP-0001") → { id: "SP-0001", name: "Paracetamol", ... }
+   *
+   * Chỉ xây lại khi danh sách sản phẩm (products) thay đổi.
+   */
+  const productMap = React.useMemo(() => {
+    const map = new Map();
+    products.forEach(prod => map.set(prod.id, prod));
+    return map;
+  }, [products]);
+
+  /**
+   * resolveProduct — Tìm sản phẩm gốc từ chi tiết hóa đơn
+   *
+   * @param {Object} detail - Một dòng chi tiết hóa đơn (có productId và/hoặc unitId)
    * @returns {Object|null} - Sản phẩm tìm được, hoặc null nếu không tìm thấy
+   *
+   * Cách hoạt động (thử lần lượt 3 cách):
+   *   Cách 1: Tra trực tiếp bằng productId từ Map → nhanh nhất, O(1)
+   *   Cách 2: Suy ra productId từ unitId (VD: "DVT-0011-VI" → "SP-0011")
+   *   Cách 3: Duyệt toàn bộ sản phẩm tìm unit khớp → chậm nhất, O(n)
    */
   const resolveProduct = (detail) => {
-    // Cách 1 (nhanh nhất): Tra trực tiếp bằng productId từ Map → O(1)
+    // Cách 1: Tra trực tiếp bằng productId
     if (detail.productId) {
       const found = productMap.get(detail.productId);
       if (found) return found;
@@ -229,15 +157,15 @@ const POS = () => {
     // Cách 2: Suy ra productId từ unitId
     // VD: unitId = "DVT-0011-VI" → tách lấy "0011" → productId = "SP-0011"
     if (detail.unitId) {
-      const parts = detail.unitId.split('-'); // ["DVT", "0011", "VI"]
+      const parts = detail.unitId.split('-');
       if (parts.length >= 2) {
-        const derivedProductId = `SP-${parts[1]}`; // → "SP-0011"
+        const derivedProductId = `SP-${parts[1]}`;
         const found = productMap.get(derivedProductId);
         if (found) return found;
       }
     }
 
-    // Cách 3 (chậm nhất, fallback cuối): Duyệt tìm sản phẩm có unit khớp
+    // Cách 3: Duyệt toàn bộ sản phẩm tìm unit khớp (fallback cuối cùng)
     if (detail.unitId) {
       return products.find(p =>
         p.units && p.units.some(u => u.unitId === detail.unitId)
@@ -247,57 +175,72 @@ const POS = () => {
     return null;
   };
 
-  // Keyboard shortcut / barcode event listener simulation
+  // =============================================
+  // PHẦN 4: XỬ LÝ QUÉT MÃ VẠCH (BARCODE)
+  // =============================================
+
+  /**
+   * handleSearchKeyPress — Xử lý khi nhấn phím Enter trong ô tìm kiếm
+   *
+   * @param {Event} e - Sự kiện bàn phím
+   *
+   * Nếu nội dung nhập trùng với mã vạch của sản phẩm nào đó,
+   * tự động thêm sản phẩm đó vào giỏ hàng (đơn vị cơ bản).
+   */
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-
-      // Check if input is a barcode
       const term = searchTerm.trim();
       if (!term) return;
 
-      // Scan barcode match
+      // Tìm sản phẩm có mã vạch trùng khớp
       const matchedProduct = products.find(p => p.barcodes && p.barcodes.includes(term));
 
       if (matchedProduct) {
-        // Find base or first unit
+        // Lấy đơn vị cơ bản (isBase = true) hoặc đơn vị đầu tiên
         const baseUnit = matchedProduct.units.find(u => u.isBase) || matchedProduct.units[0];
         addToCart(matchedProduct, baseUnit);
-        setSearchTerm(''); // clear barcode input
-        // Quick visual toast or indicator
+        setSearchTerm('');
         showScanToast(matchedProduct.name);
       }
     }
   };
 
-  // Temporary floating toast indicator for scanning
-  const [toastMessage, setToastMessage] = useState('');
+  /**
+   * showScanToast — Hiển thị thông báo nổi khi quét mã vạch thành công
+   * Thông báo tự động biến mất sau 2.5 giây.
+   */
   const showScanToast = (msg) => {
     setToastMessage(`Đã quét: ${msg}`);
     setTimeout(() => setToastMessage(''), 2500);
   };
 
-  /* ============================================================
-   * MODULE: Cart Operations — Thao tác giỏ hàng (CRUD)
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Quản lý giỏ hàng: thêm/xóa/cập nhật số lượng/đổi đơn vị tính.
+  // =============================================
+  // PHẦN 5: THAO TÁC GIỎ HÀNG (THÊM / XÓA / SỬA)
+  // =============================================
+
+  /**
+   * addToCart — Thêm sản phẩm vào giỏ hàng
    *
-   * 2. Tư duy cốt lõi:
-   *    - Mỗi item trong cart được định danh bằng cặp (productId + unitId).
-   *      Cùng 1 sản phẩm với 2 đơn vị khác nhau = 2 dòng riêng biệt.
-   *    - updateQuantity kiểm tra tồn kho bằng quy đổi: SL × conversionFactor
-   *    - handleUnitChange gộp item nếu đổi sang đơn vị đã có trong giỏ
-   * ============================================================ */
+   * @param {Object} product - Sản phẩm cần thêm
+   * @param {Object} unit - Đơn vị tính được chọn (viên/vỉ/hộp)
+   *
+   * Mỗi item trong giỏ được định danh bằng cặp (productId + unitId).
+   * Nếu sản phẩm + đơn vị đã có trong giỏ → tăng số lượng lên 1.
+   * Nếu chưa có → thêm dòng mới.
+   */
   const addToCart = (product, unit) => {
-    // Check if item is already in cart with the same unit
-    const existingIndex = cart.findIndex(item => item.productId === product.id && item.unitId === unit.unitId);
+    const existingIndex = cart.findIndex(
+      item => item.productId === product.id && item.unitId === unit.unitId
+    );
 
     if (existingIndex > -1) {
+      // Đã có trong giỏ → tăng số lượng
       const updatedCart = [...cart];
       updatedCart[existingIndex].quantity += 1;
       setCart(updatedCart);
     } else {
+      // Chưa có → thêm dòng mới
       setCart([...cart, {
         productId: product.id,
         name: product.name,
@@ -307,28 +250,43 @@ const POS = () => {
         price: unit.price,
         conversionFactor: unit.conversionFactor,
         quantity: 1,
-        maxAvailableQty: product.totalQuantity // in base units
+        maxAvailableQty: product.totalQuantity // Tồn kho tính theo đơn vị cơ bản
       }]);
     }
   };
 
+  /**
+   * removeFromCart — Xóa một dòng sản phẩm khỏi giỏ hàng
+   *
+   * @param {string} productId - Mã sản phẩm
+   * @param {string} unitId - Mã đơn vị tính
+   */
   const removeFromCart = (productId, unitId) => {
     setCart(cart.filter(item => !(item.productId === productId && item.unitId === unitId)));
   };
 
+  /**
+   * updateQuantity — Cập nhật số lượng của một dòng trong giỏ hàng
+   *
+   * @param {string} productId - Mã sản phẩm
+   * @param {string} unitId - Mã đơn vị tính
+   * @param {number} newQty - Số lượng mới
+   *
+   * Kiểm tra tồn kho: số lượng mới × hệ số quy đổi ≤ tồn kho (đơn vị cơ bản)
+   */
   const updateQuantity = (productId, unitId, newQty) => {
     if (newQty <= 0) {
       removeFromCart(productId, unitId);
       return;
     }
 
-    // Check if new quantity exceeds stock in base units
+    // Kiểm tra tồn kho
     const item = cart.find(i => i.productId === productId && i.unitId === unitId);
     const product = products.find(p => p.id === productId);
     if (item && product) {
       const requiredBaseQty = newQty * item.conversionFactor;
       if (requiredBaseQty > product.totalQuantity) {
-        alert(`Số lượng yêu cầu (${newQty} ${item.unitName} = ${requiredBaseQty} Viên/Ống) vượt quá số lượng tồn kho khả dụng (${product.totalQuantity} Viên/Ống).`);
+        alert(`Số lượng yêu cầu (${newQty} ${item.unitName} = ${requiredBaseQty} Viên/Ống) vượt quá tồn kho (${product.totalQuantity} Viên/Ống).`);
         return;
       }
     }
@@ -340,6 +298,16 @@ const POS = () => {
     ));
   };
 
+  /**
+   * handleUnitChange — Đổi đơn vị tính của một dòng trong giỏ hàng
+   *
+   * @param {string} productId - Mã sản phẩm
+   * @param {string} oldUnitId - Đơn vị cũ
+   * @param {string} newUnitId - Đơn vị mới
+   *
+   * Nếu đơn vị mới đã có sẵn trong giỏ → gộp số lượng 2 dòng lại.
+   * Nếu chưa có → chỉ thay đổi thông tin đơn vị và giá tiền.
+   */
   const handleUnitChange = (productId, oldUnitId, newUnitId) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;
@@ -347,18 +315,20 @@ const POS = () => {
     const newUnit = product.units.find(u => u.unitId === newUnitId);
     if (!newUnit) return;
 
-    // Check if cart already has an item with this new unit
-    const existingIndex = cart.findIndex(item => item.productId === productId && item.unitId === newUnitId);
+    // Kiểm tra đơn vị mới đã có trong giỏ chưa
+    const existingIndex = cart.findIndex(
+      item => item.productId === productId && item.unitId === newUnitId
+    );
 
     if (existingIndex > -1) {
-      // Merge them
+      // Đã có → gộp số lượng
       const targetItem = cart.find(item => item.productId === productId && item.unitId === oldUnitId);
       const updatedCart = [...cart];
       updatedCart[existingIndex].quantity += targetItem.quantity;
-      // remove old one
+      // Xóa dòng cũ
       setCart(updatedCart.filter(item => !(item.productId === productId && item.unitId === oldUnitId)));
     } else {
-      // Just swap the unit and update price
+      // Chưa có → đổi thông tin đơn vị
       setCart(cart.map(item =>
         (item.productId === productId && item.unitId === oldUnitId)
           ? {
@@ -373,36 +343,32 @@ const POS = () => {
     }
   };
 
-  // Calculations
+  // =============================================
+  // PHẦN 6: TÍNH TOÁN TỔNG TIỀN
+  // =============================================
+
+  /**
+   * cartSubtotal — Tổng tiền giỏ hàng
+   * Công thức: Tổng (giá × số lượng) của tất cả các dòng trong giỏ
+   */
   const cartSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const discountAmount = redeemedPoints * 1000; // 1 Point = 1,000 VND
-  const cartTotal = Math.max(0, cartSubtotal - discountAmount);
 
-  // Loyalty Points Redemption logic
-  const handlePointsChange = (val) => {
-    const points = parseInt(val) || 0;
-    if (points < 0) {
-      setRedeemedPoints(0);
-      return;
-    }
-    if (customer && points > customer.points) {
-      setRedeemedPoints(customer.points);
-      return;
-    }
-    // Cannot redeem more points than invoice subtotal
-    const maxPointsAllowed = Math.floor(cartSubtotal / 1000);
-    if (points > maxPointsAllowed) {
-      setRedeemedPoints(maxPointsAllowed);
-      return;
-    }
-    setRedeemedPoints(points);
-  };
+  // =============================================
+  // PHẦN 7: TRA CỨU & TẠO MỚI KHÁCH HÀNG
+  // =============================================
 
-  // Customer Actions
+  /**
+   * handleSearchCustomer — Tìm khách hàng theo số điện thoại
+   *
+   * Cách hoạt động:
+   *   1. Kiểm tra SĐT hợp lệ (10 chữ số, bắt đầu bằng 0)
+   *   2. Gọi GET /api/customers/search?phone=...
+   *   3. Nếu tìm thấy → lưu vào state customer
+   *   4. Nếu không tìm thấy → hiện form thêm khách mới
+   */
   const handleSearchCustomer = async () => {
     setCustomerSearchMsg('');
     setCustomer(null);
-    setRedeemedPoints(0);
     setShowAddCustomer(false);
 
     const phone = customerPhone.trim();
@@ -411,6 +377,7 @@ const POS = () => {
       return;
     }
 
+    // Kiểm tra định dạng SĐT: 10 chữ số, bắt đầu bằng 0
     const phoneRegex = /^0\d{9}$/;
     if (!phoneRegex.test(phone)) {
       setCustomerSearchMsg('SĐT phải gồm đúng 10 chữ số và bắt đầu bằng số 0.');
@@ -429,6 +396,14 @@ const POS = () => {
     }
   };
 
+  /**
+   * handleAddCustomer — Tạo mới khách hàng
+   *
+   * @param {Event} e - Sự kiện submit của form
+   *
+   * Gửi POST /api/customers với { lastName, firstName, phone }
+   * Nếu thành công → lưu khách hàng vừa tạo vào state customer
+   */
   const handleAddCustomer = async (e) => {
     e.preventDefault();
     setAddCustomerError('');
@@ -465,21 +440,34 @@ const POS = () => {
     }
   };
 
-  // Check if cart has prescription drug
+  // =============================================
+  // PHẦN 8: THANH TOÁN & TẠO HÓA ĐƠN
+  // =============================================
+
+  /** Kiểm tra giỏ hàng có thuốc kê đơn không (hiển thị cảnh báo) */
   const hasPrescriptionDrug = cart.some(item => item.type === 'THUOC_KE_DON');
 
-  // Submit checkout invoice
+  /**
+   * handleCheckout — Xử lý thanh toán, tạo hóa đơn mới
+   *
+   * Cách hoạt động:
+   *   1. Chuẩn bị dữ liệu hóa đơn (employeeId, customerId, details, totalAmount,...)
+   *   2. Gửi POST /api/invoices
+   *   3. Nếu thành công → hiển thị modal hóa đơn, xóa giỏ hàng, tải lại tồn kho
+   *   4. Nếu thất bại → hiển thị lỗi
+   */
   const handleCheckout = async () => {
     if (cart.length === 0) return;
 
     setCheckoutLoading(true);
     setCheckoutError('');
 
+    // Chuẩn bị dữ liệu gửi lên Backend
     const invoiceData = {
       employeeId: activeEmployee?.id,
-      customerId: customer ? customer.id : 'KH-00000', // Default guest customer
+      customerId: customer ? customer.id : 'KH-00000', // KH-00000 = Khách vãng lai
       isBankTransfer,
-      totalAmount: cartTotal,
+      totalAmount: cartSubtotal,
       details: cart.map(item => ({
         productId: item.productId,
         unitId: item.unitId,
@@ -493,12 +481,11 @@ const POS = () => {
       setLastInvoice(res.data);
       setShowReceiptModal(true);
 
-      // Clear states on success
+      // Xóa giỏ hàng và thông tin khách hàng sau khi thanh toán thành công
       setCart([]);
       setCustomer(null);
       setCustomerPhone('');
-      setRedeemedPoints(0);
-      loadProducts(); // Reload stocks
+      loadProducts(); // Tải lại tồn kho mới nhất từ Backend
     } catch (err) {
       setCheckoutError(err.response?.data?.message || 'Có lỗi xảy ra trong quá trình thanh toán.');
     } finally {
@@ -506,12 +493,19 @@ const POS = () => {
     }
   };
 
-  // TỐI ƯU HÓA: Dùng React.useMemo để việc tìm kiếm/lọc sản phẩm chỉ thực hiện lại
-  // khi danh sách sản phẩm (products) hoặc từ khóa tìm kiếm (searchTerm) thay đổi.
-  // Tránh tính toán lại lãng phí khi nhập thông tin khách hàng hoặc cập nhật giỏ hàng.
+  // =============================================
+  // PHẦN 9: LỌC & HIỂN THỊ SẢN PHẨM
+  // =============================================
+
+  /**
+   * filteredProducts — Danh sách sản phẩm sau khi lọc theo từ khóa
+   *
+   * Tìm kiếm theo: tên sản phẩm, mã SP, thành phần hoạt chất, mã vạch
+   * Dùng useMemo → chỉ lọc lại khi products hoặc searchTerm thay đổi.
+   */
   const filteredProducts = React.useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return products; // Nếu từ khóa trống, trả về toàn bộ danh sách sản phẩm
+    if (!term) return products;
 
     return products.filter(p => {
       return (
@@ -521,9 +515,14 @@ const POS = () => {
         (p.barcodes && p.barcodes.some(b => b.includes(term)))
       );
     });
-  }, [products, searchTerm]); // Chỉ tính toán lại khi products hoặc searchTerm thay đổi
+  }, [products, searchTerm]);
 
-  // Category Translation Helper
+  /**
+   * getCategoryLabel — Chuyển đổi mã loại sản phẩm thành nhãn hiển thị
+   *
+   * @param {string} type - Mã loại (THUOC_KE_DON, THUOC_KHONG_KE_DON, THUC_PHAM_CHUC_NANG)
+   * @returns {Object} - { text: 'Tên hiển thị', class: 'CSS class cho badge' }
+   */
   const getCategoryLabel = (type) => {
     switch (type) {
       case 'THUOC_KE_DON':
@@ -537,14 +536,18 @@ const POS = () => {
     }
   };
 
+  // =============================================
+  // PHẦN 10: GIAO DIỆN (JSX)
+  // =============================================
+
   return (
     <div className="flex h-full w-full overflow-hidden p-4 gap-4 relative bg-slate-950">
 
-      {/* Liquid Glass Background Blobs */}
+      {/* Hiệu ứng nền trang trí */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-emerald-500/10 to-teal-500/5 blur-3xl pointer-events-none animate-liquid-1 z-0"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[700px] h-[700px] bg-gradient-to-br from-teal-500/10 to-emerald-500/5 blur-3xl pointer-events-none animate-liquid-2 z-0"></div>
 
-      {/* Floating Scan Notification */}
+      {/* Thông báo nổi khi quét mã vạch thành công */}
       {toastMessage && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-emerald-500 text-slate-950 font-bold px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-emerald-400 animate-bounce">
           <Barcode className="w-5 h-5" />
@@ -552,10 +555,10 @@ const POS = () => {
         </div>
       )}
 
-      {/* LEFT COLUMN - Product search & Catalog (col-span-5) */}
+      {/* ==================== CỘT TRÁI: Danh mục sản phẩm ==================== */}
       <div className="w-[44%] flex flex-col h-full bg-slate-900 bg-opacity-40 backdrop-blur-md rounded-2xl border border-slate-800/80 overflow-hidden">
 
-        {/* Search header bar */}
+        {/* Thanh tìm kiếm */}
         <div className="py-2.5 px-3 border-b border-slate-800 bg-slate-950/40">
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
@@ -585,7 +588,7 @@ const POS = () => {
           </div>
         </div>
 
-        {/* Products Scrollable Area */}
+        {/* Danh sách sản phẩm (cuộn được) */}
         <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12 text-slate-500 font-medium">
@@ -604,7 +607,7 @@ const POS = () => {
                       : 'glass-card border-slate-800'
                     }`}
                 >
-                  {/* Title & Badge */}
+                  {/* Tên sản phẩm & Nhãn phân loại */}
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <h3 className="font-semibold text-slate-100 text-xs leading-tight">
@@ -619,7 +622,7 @@ const POS = () => {
                     </span>
                   </div>
 
-                  {/* Batches Sub-section */}
+                  {/* Thông tin lô hàng */}
                   <div className="mt-2 bg-slate-950 bg-opacity-40 rounded-lg p-2 border border-slate-800/40">
                     <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex justify-between">
                       <span>Lô Hàng Hiện Có</span>
@@ -629,7 +632,7 @@ const POS = () => {
                       <div className="space-y-1">
                         {prod.batches.map(batch => {
                           const expDate = new Date(batch.expDate);
-                          const isNearExp = expDate - new Date() < 1000 * 60 * 60 * 24 * 90; // 90 days
+                          const isNearExp = expDate - new Date() < 1000 * 60 * 60 * 24 * 90; // Cận hạn < 90 ngày
                           const baseUnit = prod.units ? prod.units.find(u => u.isBase) : null;
                           const baseUnitName = baseUnit ? baseUnit.name : 'viên';
                           return (
@@ -650,7 +653,7 @@ const POS = () => {
                     )}
                   </div>
 
-                  {/* Unit conversion buttons */}
+                  {/* Nút chọn đơn vị bán */}
                   <div className="mt-2.5 pt-2 border-t border-slate-800/50 flex justify-between items-center">
                     <span className="text-[11px] text-slate-400">Chọn đơn vị bán:</span>
                     <div className="flex flex-wrap gap-1">
@@ -678,10 +681,10 @@ const POS = () => {
 
       </div>
 
-      {/* CENTER COLUMN - Cart Area (col-span-4) */}
+      {/* ==================== CỘT GIỮA: Giỏ hàng ==================== */}
       <div className="w-[32%] flex flex-col h-full bg-slate-900 bg-opacity-40 backdrop-blur-md rounded-2xl border border-slate-800/80 overflow-hidden">
 
-        {/* Cart Header */}
+        {/* Tiêu đề giỏ hàng */}
         <div className="py-2.5 px-3.5 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-pharmacy-400" />
@@ -692,7 +695,7 @@ const POS = () => {
           </span>
         </div>
 
-        {/* Prescription Alert Badge */}
+        {/* Cảnh báo thuốc kê đơn */}
         {hasPrescriptionDrug && (
           <div className="p-2 bg-red-500/10 border-b border-red-500/25 flex items-start gap-1.5 text-[11px] text-red-400">
             <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -702,7 +705,7 @@ const POS = () => {
           </div>
         )}
 
-        {/* Cart items list */}
+        {/* Danh sách sản phẩm trong giỏ */}
         <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-2">
@@ -711,14 +714,14 @@ const POS = () => {
             </div>
           ) : (
             cart.map((item) => {
-              // Find units list for unit conversions
+              // Lấy danh sách đơn vị để hiển thị dropdown đổi đơn vị
               const productObj = products.find(p => p.id === item.productId);
               const units = productObj ? productObj.units : [];
 
               return (
                 <div key={`${item.productId}-${item.unitId}`} className="p-2.5 rounded-xl border border-slate-800 bg-slate-950 bg-opacity-35 space-y-2">
 
-                  {/* Name and Delete Button */}
+                  {/* Tên sản phẩm & Nút xóa */}
                   <div className="flex justify-between items-start gap-1">
                     <span className="text-xs font-semibold text-slate-200 leading-tight">
                       {item.name}
@@ -731,10 +734,10 @@ const POS = () => {
                     </button>
                   </div>
 
-                  {/* Pricing dropdown and qty controller */}
+                  {/* Dropdown đơn vị + Điều chỉnh số lượng + Thành tiền */}
                   <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-900">
 
-                    {/* Unit Changer */}
+                    {/* Dropdown đổi đơn vị tính */}
                     <select
                       value={item.unitId}
                       onChange={(e) => handleUnitChange(item.productId, item.unitId, e.target.value)}
@@ -747,7 +750,7 @@ const POS = () => {
                       ))}
                     </select>
 
-                    {/* Quantity controls */}
+                    {/* Nút tăng/giảm số lượng */}
                     <div className="flex items-center border border-slate-850 rounded bg-slate-900">
                       <button
                         onClick={() => updateQuantity(item.productId, item.unitId, item.quantity - 1)}
@@ -770,7 +773,7 @@ const POS = () => {
                       </button>
                     </div>
 
-                    {/* Line Item Total */}
+                    {/* Thành tiền của dòng này */}
                     <span className="text-xs font-mono text-emerald-400 font-bold whitespace-nowrap">
                       {(item.price * item.quantity).toLocaleString()}đ
                     </span>
@@ -785,19 +788,19 @@ const POS = () => {
 
       </div>
 
-      {/* RIGHT COLUMN - Customer lookup & Billing (col-span-3) */}
+      {/* ==================== CỘT PHẢI: Thanh toán & Khách hàng ==================== */}
       <div className="w-[24%] flex flex-col h-full bg-slate-900 bg-opacity-40 backdrop-blur-md rounded-2xl border border-slate-800/80 overflow-hidden">
 
-        {/* Column Title */}
+        {/* Tiêu đề cột */}
         <div className="py-2.5 px-3.5 border-b border-slate-800 bg-slate-950/40 flex items-center gap-2">
           <User className="w-4 h-4 text-pharmacy-400" />
           <h2 className="font-semibold text-xs uppercase tracking-wider">Thanh toán & Khách hàng</h2>
         </div>
 
-        {/* Customer area */}
+        {/* Khu vực tra cứu khách hàng */}
         <div className="p-3 border-b border-slate-800 bg-slate-950 bg-opacity-20 space-y-3">
 
-          {/* Customer SĐT lookup */}
+          {/* Tìm khách hàng theo SĐT */}
           <div>
             <label className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1.5">
               Tìm khách hàng (SĐT)
@@ -822,7 +825,7 @@ const POS = () => {
             )}
           </div>
 
-          {/* Quick-add Customer Form */}
+          {/* Form thêm nhanh khách hàng mới */}
           {showAddCustomer && (
             <form onSubmit={handleAddCustomer} className="p-2.5 rounded-xl border border-slate-800 bg-slate-950 bg-opacity-60 space-y-2 animate-fade-in">
               <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wide flex items-center gap-1">
@@ -872,7 +875,7 @@ const POS = () => {
             </form>
           )}
 
-          {/* Display active customer stats */}
+          {/* Hiển thị thông tin khách hàng đã chọn */}
           {customer ? (
             <div className="p-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-between">
               <div className="overflow-hidden">
@@ -899,38 +902,11 @@ const POS = () => {
 
         </div>
 
-        {/* Loyalty Point Redemption & Payment Methods */}
+        {/* Hình thức thanh toán & Nút thanh toán */}
         <div className="flex-1 p-3 flex flex-col justify-between overflow-y-auto space-y-3">
 
           <div className="space-y-3">
-            {/* Loyalty points slider / input */}
-            {customer && customer.points > 0 && (
-              <div className="animate-fade-in">
-                <label className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1.5 flex justify-between">
-                  <span>Quy đổi điểm tích lũy</span>
-                  <span className="font-mono text-emerald-400">Max: {customer.points}</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="0"
-                    max={customer.points}
-                    placeholder="Nhập số điểm cần quy đổi..."
-                    value={redeemedPoints}
-                    onChange={(e) => handlePointsChange(e.target.value)}
-                    className="w-full pl-3 pr-16 py-1 rounded-lg glass-input text-xs font-mono font-bold"
-                  />
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-[10px] text-slate-500 font-bold uppercase">
-                    điểm
-                  </span>
-                </div>
-                <div className="text-[10px] text-slate-500 mt-1 pl-1 font-mono">
-                  1 điểm = 1k. Giảm tương ứng: <span className="text-emerald-400 font-bold">{(redeemedPoints * 1000).toLocaleString()}đ</span>
-                </div>
-              </div>
-            )}
-
-            {/* Payment options */}
+            {/* Lựa chọn hình thức thanh toán */}
             <div>
               <label className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">
                 Hình thức thanh toán
@@ -960,7 +936,7 @@ const POS = () => {
             </div>
           </div>
 
-          {/* Pricing totals & Checkout button */}
+          {/* Tổng tiền & Nút xác nhận thanh toán */}
           <div className="space-y-2.5 border-t border-slate-800/80 pt-2.5 bg-transparent mt-auto">
             {checkoutError && (
               <div className="text-xs text-red-400 p-2 rounded bg-red-500/10 border border-red-500/20 leading-normal">
@@ -969,20 +945,10 @@ const POS = () => {
             )}
 
             <div className="space-y-1.5 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>Tạm tính</span>
-                <span className="font-mono text-slate-300 font-medium">{cartSubtotal.toLocaleString()}đ</span>
-              </div>
-              {redeemedPoints > 0 && (
-                <div className="flex justify-between text-yellow-500">
-                  <span>Khấu trừ điểm ({redeemedPoints}đ)</span>
-                  <span className="font-mono font-bold">-{(redeemedPoints * 1000).toLocaleString()}đ</span>
-                </div>
-              )}
-              <div className="flex justify-between text-slate-100 font-bold border-t border-slate-850/60 pt-1.5 text-sm">
+              <div className="flex justify-between text-slate-100 font-bold border-t border-slate-800 pt-1.5 text-sm">
                 <span>Tổng cộng</span>
                 <span className="font-mono text-emerald-400 text-base">
-                  {cartTotal.toLocaleString()}đ
+                  {cartSubtotal.toLocaleString()}đ
                 </span>
               </div>
             </div>
@@ -1007,18 +973,15 @@ const POS = () => {
 
       </div>
 
-      {/* RENDER INVOICE PRINT RECEIPT POPUP MODAL */}
+      {/* ==================== MODAL HÓA ĐƠN SAU THANH TOÁN ==================== */}
       {showReceiptModal && lastInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-opacity-80 p-4 overflow-y-auto no-print">
           <div className="relative w-full max-w-sm bg-white text-slate-900 rounded-2xl shadow-2xl p-6 border border-slate-200 animate-fade-in flex flex-col justify-between">
 
-            {/* Modal Header actions */}
+            {/* Nút In & Đóng modal */}
             <div className="absolute top-4 right-4 flex gap-2">
               <button
-                onClick={() => {
-                  // Simulate print
-                  window.print();
-                }}
+                onClick={() => window.print()}
                 className="p-2 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer"
                 title="In hóa đơn"
               >
@@ -1035,10 +998,10 @@ const POS = () => {
               </button>
             </div>
 
-            {/* Receipt Content container */}
+            {/* Nội dung hóa đơn */}
             <div id="print-receipt" className="font-mono text-xs text-slate-800 space-y-4">
 
-              {/* Brand logo header */}
+              {/* Header thương hiệu */}
               <div className="text-center space-y-1 pb-4 border-b border-dashed border-slate-300">
                 <h2 className="text-sm font-bold tracking-widest text-slate-950">NHÀ THUỐC DƯỢC AN KHANG</h2>
                 <p className="text-[10px] text-slate-500">12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, TP. Hồ Chí Minh</p>
@@ -1046,7 +1009,7 @@ const POS = () => {
                 <div className="text-center font-bold text-slate-950 pt-2 text-[11px]">HÓA ĐƠN BÁN LẺ</div>
               </div>
 
-              {/* Invoice Meta details */}
+              {/* Thông tin hóa đơn */}
               <div className="space-y-1 text-[10px] text-slate-600 border-b border-dashed border-slate-300 pb-3">
                 <div className="flex justify-between">
                   <span>Mã HĐ:</span>
@@ -1070,7 +1033,7 @@ const POS = () => {
                 </div>
               </div>
 
-              {/* Items purchase table */}
+              {/* Bảng sản phẩm đã mua */}
               <table className="w-full text-[10px] text-left border-b border-dashed border-slate-300 pb-3">
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
@@ -1081,9 +1044,7 @@ const POS = () => {
                 </thead>
                 <tbody>
                   {lastInvoice.details.map((item, index) => {
-                    // Dùng helper resolveProduct() — DRY, tránh lặp lại 14 dòng code
                     const originalProduct = resolveProduct(item);
-
                     const unitName = originalProduct ? originalProduct.units.find(u => u.unitId === item.unitId)?.name : 'Viên';
                     return (
                       <tr key={index} className="border-b border-slate-100">
@@ -1100,16 +1061,8 @@ const POS = () => {
                 </tbody>
               </table>
 
-              {/* Pricing totals */}
+              {/* Tổng tiền thanh toán */}
               <div className="space-y-1.5 text-[10px] text-slate-600">
-
-                {lastInvoice.redeemedPoints > 0 && (
-                  <div className="flex justify-between text-slate-700">
-                    <span>Điểm quy đổi:</span>
-                    <span>-{(lastInvoice.redeemedPoints * 1000).toLocaleString()}đ</span>
-                  </div>
-                )}
-
                 <div className="flex justify-between text-slate-950 font-bold text-[11px] border-t border-slate-200 pt-2">
                   <span>Tổng tiền thanh toán:</span>
                   <span className="font-mono text-slate-950 text-xs">
@@ -1129,7 +1082,7 @@ const POS = () => {
                 )}
               </div>
 
-              {/* Footer notice */}
+              {/* Chân hóa đơn */}
               <div className="text-center space-y-1 pt-4 border-t border-dashed border-slate-300 text-[9px] text-slate-400">
                 <p>Cảm ơn Quý Khách. Hẹn gặp lại!</p>
                 <p>Mẫu hóa đơn in ấn điện tử POS Dược An Khang</p>
@@ -1137,7 +1090,7 @@ const POS = () => {
 
             </div>
 
-            {/* Modal Actions */}
+            {/* Nút hoàn thành */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end gap-2.5">
               <button
                 onClick={() => {

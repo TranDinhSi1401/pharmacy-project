@@ -1,7 +1,18 @@
+/**
+ * ============================================================
+ * FILE: axios.js — Cấu hình Axios cho toàn bộ Frontend
+ * ============================================================
+ * Chức năng:
+ *   Tạo 1 instance Axios dùng chung cho tất cả các trang (POS, History, Login).
+ *   Tự động xử lý 2 việc quan trọng:
+ *   1. Gắn JWT Token vào mọi request gửi đi (Request Interceptor)
+ *   2. Bóc lớp vỏ ApiResponse<T> của Backend, chỉ lấy phần 'result' (Response Interceptor)
+ * ============================================================
+ */
 import axios from 'axios';
 
-// 1. Tạo một instance (thực thể) Axios hướng tới Base URL của Backend API.
-// baseURL được lấy từ file môi trường (.env) hoặc mặc định là rỗng (vì các file giao diện đã viết sẵn tiền tố '/api').
+// 1. Tạo instance Axios hướng tới Base URL của Backend API.
+// baseURL lấy từ file .env hoặc mặc định rỗng (vì các trang đã viết sẵn tiền tố '/api').
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
   headers: {

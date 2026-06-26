@@ -1,0 +1,410 @@
+[
+  {
+    "_id": "KH-00000",
+    "lastName": "Khách",
+    "firstName": "Vãng Lai",
+    "phone": "0000000000",
+    "points": 337818,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00001",
+    "lastName": "Nguyễn Thị",
+    "firstName": "Lan",
+    "phone": "0909000001",
+    "points": 3893,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00002",
+    "lastName": "Trần Văn",
+    "firstName": "Hùng",
+    "phone": "0909000002",
+    "points": 4784,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00003",
+    "lastName": "Lê Thị",
+    "firstName": "Mai",
+    "phone": "0909000003",
+    "points": 5710,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00004",
+    "lastName": "Phạm Văn",
+    "firstName": "Tuấn",
+    "phone": "0909000004",
+    "points": 5938,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00005",
+    "lastName": "Hoàng Thị",
+    "firstName": "Thu",
+    "phone": "0909000005",
+    "points": 4470,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00006",
+    "lastName": "Vũ Văn",
+    "firstName": "Nam",
+    "phone": "0909000006",
+    "points": 3241,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00007",
+    "lastName": "Đặng Thị",
+    "firstName": "Hương",
+    "phone": "0909000007",
+    "points": 3798,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00008",
+    "lastName": "Bùi Văn",
+    "firstName": "Minh",
+    "phone": "0909000008",
+    "points": 5043,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00009",
+    "lastName": "Đỗ Thị",
+    "firstName": "Linh",
+    "phone": "0909000009",
+    "points": 6242,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00010",
+    "lastName": "Ngô Văn",
+    "firstName": "Sơn",
+    "phone": "0909000010",
+    "points": 4363,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00011",
+    "lastName": "Trịnh Thị",
+    "firstName": "Hà",
+    "phone": "0909000011",
+    "points": 2827,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00012",
+    "lastName": "Lý Văn",
+    "firstName": "Hải",
+    "phone": "0909000012",
+    "points": 4807,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00013",
+    "lastName": "Vương Thị",
+    "firstName": "Yến",
+    "phone": "0909000013",
+    "points": 7107,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00014",
+    "lastName": "Dương Văn",
+    "firstName": "Phong",
+    "phone": "0909000014",
+    "points": 3935,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00015",
+    "lastName": "Mai Thị",
+    "firstName": "Nga",
+    "phone": "0909000015",
+    "points": 2142,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00016",
+    "lastName": "Tô Văn",
+    "firstName": "Tài",
+    "phone": "0909000016",
+    "points": 4858,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00017",
+    "lastName": "Hồ Thị",
+    "firstName": "Cúc",
+    "phone": "0909000017",
+    "points": 8452,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00018",
+    "lastName": "Châu Văn",
+    "firstName": "Kiệt",
+    "phone": "0909000018",
+    "points": 8792,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00019",
+    "lastName": "Đinh Thị",
+    "firstName": "Trang",
+    "phone": "0909000019",
+    "points": 2468,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00020",
+    "lastName": "Đoàn Văn",
+    "firstName": "Dũng",
+    "phone": "0909000020",
+    "points": 4604,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00021",
+    "lastName": "Lâm Thị",
+    "firstName": "Thảo",
+    "phone": "0909000021",
+    "points": 8724,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00022",
+    "lastName": "Phùng Văn",
+    "firstName": "Long",
+    "phone": "0909000022",
+    "points": 8713,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00023",
+    "lastName": "Giang Thị",
+    "firstName": "Huyền",
+    "phone": "0909000023",
+    "points": 5507,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00024",
+    "lastName": "Huỳnh Văn",
+    "firstName": "Đức",
+    "phone": "0909000024",
+    "points": 4966,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00025",
+    "lastName": "Lưu Thị",
+    "firstName": "Diệp",
+    "phone": "0909000025",
+    "points": 8991,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00026",
+    "lastName": "Mạc Văn",
+    "firstName": "Trung",
+    "phone": "0909000026",
+    "points": 6069,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00027",
+    "lastName": "Nguyễn Trần",
+    "firstName": "Anh",
+    "phone": "0909000027",
+    "points": 3541,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00028",
+    "lastName": "Phan Lê",
+    "firstName": "Quỳnh",
+    "phone": "0909000028",
+    "points": 5523,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00029",
+    "lastName": "Thái Văn",
+    "firstName": "Bảo",
+    "phone": "0909000029",
+    "points": 6805,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00030",
+    "lastName": "Trần Lê",
+    "firstName": "Uyên",
+    "phone": "0909000030",
+    "points": 8549,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00031",
+    "lastName": "Võ Hoàng",
+    "firstName": "Tú",
+    "phone": "0909000031",
+    "points": 8591,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00032",
+    "lastName": "Lê Nguyễn",
+    "firstName": "Phúc",
+    "phone": "0909000032",
+    "points": 9836,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00033",
+    "lastName": "Ngô Đặng",
+    "firstName": "My",
+    "phone": "0909000033",
+    "points": 8233,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00034",
+    "lastName": "Vương Đình",
+    "firstName": "Khánh",
+    "phone": "0909000034",
+    "points": 9074,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00035",
+    "lastName": "HoàngPhúc",
+    "firstName": "Thịnh",
+    "phone": "0909000035",
+    "points": 9052,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00036",
+    "lastName": "Bùi Trần",
+    "firstName": "Ngọc",
+    "phone": "0909000036",
+    "points": 5676,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00037",
+    "lastName": "Cao Minh",
+    "firstName": "Tâm",
+    "phone": "0909000037",
+    "points": 5030,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00038",
+    "lastName": "Đàm Vĩnh",
+    "firstName": "Phát",
+    "phone": "0909000038",
+    "points": 8654,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00039",
+    "lastName": "Đinh Gia",
+    "firstName": "Hân",
+    "phone": "0909000039",
+    "points": 7842,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00040",
+    "lastName": "Hà Tuấn",
+    "firstName": "Vũ",
+    "phone": "0909000040",
+    "points": 8844,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00041",
+    "lastName": "Kiều Thị",
+    "firstName": "Trinh",
+    "phone": "0909000041",
+    "points": 105,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00042",
+    "lastName": "Lại Văn",
+    "firstName": "Quyết",
+    "phone": "0909000042",
+    "points": 0,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00043",
+    "lastName": "Lương Thị",
+    "firstName": "Dịu",
+    "phone": "0909000043",
+    "points": 52,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00044",
+    "lastName": "Ngụy Văn",
+    "firstName": "Hiếu",
+    "phone": "0909000044",
+    "points": 19,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00045",
+    "lastName": "Ôn Thị",
+    "firstName": "Như",
+    "phone": "0909000045",
+    "points": 0,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00046",
+    "lastName": "Quách Văn",
+    "firstName": "Tân",
+    "phone": "0909000046",
+    "points": 91,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00047",
+    "lastName": "Sơn Thị",
+    "firstName": "Kim",
+    "phone": "0909000047",
+    "points": 240,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00048",
+    "lastName": "Thạch Văn",
+    "firstName": "Phi",
+    "phone": "0909000048",
+    "points": 0,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00049",
+    "lastName": "Tiêu Thị",
+    "firstName": "Ngân",
+    "phone": "0909000049",
+    "points": 14,
+    "isDeleted": false
+  },
+  {
+    "_id": "KH-00050",
+    "lastName": "Uông Văn",
+    "firstName": "Đạt",
+    "phone": "0909000050",
+    "points": 38,
+    "isDeleted": false
+  }
+]

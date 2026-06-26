@@ -1,0 +1,2430 @@
+[
+  {
+    "_id": "SP-0001",
+    "name": "Paracetamol 500mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Thuốc giảm đau, hạ sốt không kê đơn.",
+    "ingredients": "Paracetamol 500mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 50,
+    "maxStock": 300,
+    "barcodes": [
+      "893460200101",
+      "893460200102"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0001-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 100000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0001-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 10000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0001-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0001-20240510-1",
+        "quantity": 150,
+        "mfgDate": {
+          "$date": "2024-05-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-05-10T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0001-20250120-2",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2025-01-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-01-20T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0002",
+    "name": "Amoxicillin 500mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Kháng sinh Penicillin điều trị nhiễm khuẩn (kê đơn).",
+    "ingredients": "Amoxicillin 500mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 20,
+    "maxStock": 100,
+    "barcodes": [
+      "893460200201"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0002-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 150000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0002-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 15000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0002-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0002-20241101-1",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2024-11-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-11-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0002-20250315-2",
+        "quantity": 30,
+        "mfgDate": {
+          "$date": "2025-03-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-03-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0003",
+    "name": "Vitamin C 500mg (Tuýp 20 viên sủi)",
+    "description": "Bổ sung Vitamin C, tăng cường đề kháng.",
+    "ingredients": "Ascorbic Acid 500mg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 100,
+    "maxStock": 500,
+    "barcodes": [
+      "893460200301"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0003-TUYP",
+        "name": "Tuýp",
+        "conversionFactor": 20,
+        "price": 60000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0003-VIENSUI",
+        "name": "Viên sủi",
+        "conversionFactor": 1,
+        "price": 3000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0003-20240801-1",
+        "quantity": 450,
+        "mfgDate": {
+          "$date": "2024-08-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-08-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0004",
+    "name": "Omega 3 Fish Oil 1000mg (Lọ 100 viên)",
+    "description": "Bổ sung Omega 3, tốt cho mắt và tim mạch.",
+    "ingredients": "Dầu cá 1000mg (chứa EPA, DHA)",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 30,
+    "maxStock": 150,
+    "barcodes": [
+      "893460200401"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0004-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 250000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0004-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 2500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0004-20240630-1",
+        "quantity": 70,
+        "mfgDate": {
+          "$date": "2024-06-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-30T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0004-20250401-2",
+        "quantity": 70,
+        "mfgDate": {
+          "$date": "2025-04-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-04-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0005",
+    "name": "Berberin 100mg (Lọ 100 viên)",
+    "description": "Điều trị tiêu chảy, lỵ trực khuẩn.",
+    "ingredients": "Berberin Clorid 100mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 50,
+    "maxStock": 200,
+    "barcodes": [
+      "893460200501"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0005-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 50000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0005-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0005-20240715-1",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2024-07-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-07-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0006",
+    "name": "Atorvastatin 20mg (Hộp 3 vỉ x 10 viên)",
+    "description": "Thuốc điều trị mỡ máu (kê đơn).",
+    "ingredients": "Atorvastatin 20mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 15,
+    "maxStock": 80,
+    "barcodes": [
+      "893460200601"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0006-HOP",
+        "name": "Hộp",
+        "conversionFactor": 30,
+        "price": 120000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0006-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 40000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0006-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 4000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0006-20241201-1",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2024-12-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-12-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0006-20250510-2",
+        "quantity": 30,
+        "mfgDate": {
+          "$date": "2025-05-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-05-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0007",
+    "name": "Blackmores Glucosamine 1500mg (Lọ 180 viên)",
+    "description": "Hỗ trợ xương khớp, giảm đau viêm khớp.",
+    "ingredients": "Glucosamine Sulfate 1500mg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 20,
+    "maxStock": 100,
+    "barcodes": [
+      "893460200701"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0007-LO",
+        "name": "Lọ",
+        "conversionFactor": 180,
+        "price": 630000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0007-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 3500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0007-20240220-1",
+        "quantity": 90,
+        "mfgDate": {
+          "$date": "2024-02-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-02-20T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0008",
+    "name": "Hoạt huyết dưỡng não Traphaco (Hộp 5 vỉ x 20 viên)",
+    "description": "Bổ não, tăng cường tuần hoàn máu não.",
+    "ingredients": "Cao Đinh lăng, Cao Bạch quả",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 40,
+    "maxStock": 250,
+    "barcodes": [
+      "893460200801"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0008-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 120000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0008-VI",
+        "name": "Vỉ",
+        "conversionFactor": 20,
+        "price": 24000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0008-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1200,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0008-20240905-1",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2024-09-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-09-05T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0008-20250415-2",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2025-04-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-04-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0009",
+    "name": "Clorpheniramin 4mg (Vỉ 20 viên)",
+    "description": "Thuốc chống dị ứng, sổ mũi.",
+    "ingredients": "Clorpheniramin Maleat 4mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 100,
+    "maxStock": 500,
+    "barcodes": [
+      "893460200901"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0009-VI",
+        "name": "Vỉ",
+        "conversionFactor": 20,
+        "price": 6000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0009-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 300,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0009-20240110-1",
+        "quantity": 480,
+        "mfgDate": {
+          "$date": "2024-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0010",
+    "name": "Canxi Corbiere 5ml (Hộp 30 ống)",
+    "description": "Bổ sung Canxi cho trẻ em, bà bầu.",
+    "ingredients": "Calcium Glucoheptonate",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 30,
+    "maxStock": 120,
+    "barcodes": [
+      "893460201001"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0010-HOP",
+        "name": "Hộp",
+        "conversionFactor": 30,
+        "price": 150000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0010-ONG",
+        "name": "Ống",
+        "conversionFactor": 1,
+        "price": 5000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0010-20241030-1",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2024-10-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-10-30T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0010-20250520-2",
+        "quantity": 50,
+        "mfgDate": {
+          "$date": "2025-05-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-05-20T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0011",
+    "name": "Losartan 50mg (Hộp 3 vỉ x 10 viên)",
+    "description": "Thuốc điều trị cao huyết áp (kê đơn).",
+    "ingredients": "Losartan Potassium 50mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 20,
+    "maxStock": 100,
+    "barcodes": [
+      "893460201101"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0011-HOP",
+        "name": "Hộp",
+        "conversionFactor": 30,
+        "price": 90000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0011-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 30000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0011-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 3000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0011-20240818-1",
+        "quantity": 90,
+        "mfgDate": {
+          "$date": "2024-08-18T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-08-18T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0012",
+    "name": "Siro ho Prospan (Chai 100ml)",
+    "description": "Trị ho long đờm chiết xuất lá thường xuân.",
+    "ingredients": "Cao khô lá thường xuân",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 50,
+    "maxStock": 200,
+    "barcodes": [
+      "893460201201"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0012-CHAI",
+        "name": "Chai",
+        "conversionFactor": 1,
+        "price": 70000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0012-20241101-1",
+        "quantity": 20,
+        "mfgDate": {
+          "$date": "2024-11-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-11-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0012-20250601-2",
+        "quantity": 20,
+        "mfgDate": {
+          "$date": "2025-06-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0013",
+    "name": "Men vi sinh Bifina R (Hộp 20 gói)",
+    "description": "Bổ sung lợi khuẩn đường ruột.",
+    "ingredients": "Bifidobacterium, Lactobacillus",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 25,
+    "maxStock": 100,
+    "barcodes": [
+      "893460201301"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0013-GOI",
+        "name": "Gói",
+        "conversionFactor": 1,
+        "price": 15000,
+        "isBase": true
+      },
+      {
+        "unitId": "DVT-0013-HOP",
+        "name": "Hộp",
+        "conversionFactor": 20,
+        "price": 300000,
+        "isBase": false
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0013-20240910-1",
+        "quantity": 90,
+        "mfgDate": {
+          "$date": "2024-09-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-03-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0014",
+    "name": "Oresol 245 (Hộp 20 gói)",
+    "description": "Bù nước và điện giải khi bị tiêu chảy, sốt.",
+    "ingredients": "Glucose khan, Natri Clorid, Kali Clorid",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 100,
+    "maxStock": 400,
+    "barcodes": [
+      "893460201401"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0014-GOI",
+        "name": "Gói",
+        "conversionFactor": 1,
+        "price": 2500,
+        "isBase": true
+      },
+      {
+        "unitId": "DVT-0014-HOP",
+        "name": "Hộp",
+        "conversionFactor": 20,
+        "price": 50000,
+        "isBase": false
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0014-20240301-1",
+        "quantity": 200,
+        "mfgDate": {
+          "$date": "2024-03-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-03-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0014-20250105-2",
+        "quantity": 180,
+        "mfgDate": {
+          "$date": "2025-01-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-01-05T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0015",
+    "name": "Salbutamol 2mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Thuốc giãn phế quản, trị hen suyễn (kê đơn).",
+    "ingredients": "Salbutamol 2mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 30,
+    "maxStock": 80,
+    "barcodes": [
+      "893460201501"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0015-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 80000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0015-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 8000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0015-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 800,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0015-20240725-1",
+        "quantity": 70,
+        "mfgDate": {
+          "$date": "2024-07-25T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-07-25T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0016",
+    "name": "Sắt Ferrovit (Hộp 5 vỉ x 10 viên)",
+    "description": "Bổ sung sắt, acid folic cho người thiếu máu.",
+    "ingredients": "Sắt Fumarat, Acid Folic, Vitamin B12",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 40,
+    "maxStock": 150,
+    "barcodes": [
+      "893460201601"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0016-HOP",
+        "name": "Hộp",
+        "conversionFactor": 50,
+        "price": 90000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0016-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 18000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0016-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1800,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0016-20241001-1",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2024-10-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-10-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0016-20250420-2",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2025-04-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-04-20T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0017",
+    "name": "Cialis 20mg (Vỉ 2 viên)",
+    "description": "Điều trị rối loạn cương dương (kê đơn).",
+    "ingredients": "Tadalafil 20mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 10,
+    "maxStock": 50,
+    "barcodes": [
+      "893460201701"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0017-VI",
+        "name": "Vỉ",
+        "conversionFactor": 2,
+        "price": 140000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0017-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 70000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0017-20240515-1",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2024-05-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-05-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0018",
+    "name": "Boganic (Hộp 5 vỉ x 10 viên)",
+    "description": "Thanh nhiệt, giải độc gan, mát gan.",
+    "ingredients": "Cao Actiso, Cao Rau đắng đất, Cao Bìm bìm",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 60,
+    "maxStock": 300,
+    "barcodes": [
+      "893460201801"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0018-HOP",
+        "name": "Hộp",
+        "conversionFactor": 50,
+        "price": 75000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0018-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 15000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0018-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0018-20240830-1",
+        "quantity": 150,
+        "mfgDate": {
+          "$date": "2024-08-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-08-30T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0018-20250214-2",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2025-02-14T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-02-14T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0019",
+    "name": "Omeprazol 20mg (Lọ 14 viên)",
+    "description": "Điều trị viêm loét dạ dày, trào ngược (kê đơn).",
+    "ingredients": "Omeprazole 20mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 30,
+    "maxStock": 150,
+    "barcodes": [
+      "893460201901"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0019-LO",
+        "name": "Lọ",
+        "conversionFactor": 14,
+        "price": 28000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0019-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 2000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0019-20241120-1",
+        "quantity": 140,
+        "mfgDate": {
+          "$date": "2024-11-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-11-20T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0020",
+    "name": "Ginkgo Biloba 120mg (Lọ 60 viên)",
+    "description": "Bổ não, cải thiện trí nhớ.",
+    "ingredients": "Chiết xuất Bạch quả 120mg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 50,
+    "maxStock": 200,
+    "barcodes": [
+      "893460202001"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0020-LO",
+        "name": "Lọ",
+        "conversionFactor": 60,
+        "price": 180000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0020-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 3000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0020-20240610-1",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2024-06-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-10T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0020-20250130-2",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2025-01-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-01-30T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0021",
+    "name": "Metformin 500mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Thuốc điều trị tiểu đường Type 2 (kê đơn).",
+    "ingredients": "Metformin HCl 500mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 40,
+    "maxStock": 120,
+    "barcodes": [
+      "893460202101"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0021-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 70000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0021-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 7000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0021-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 700,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0021-20240922-1",
+        "quantity": 0,
+        "mfgDate": {
+          "$date": "2024-09-22T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-09-22T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0022",
+    "name": "Decolgen Forte (Hộp 25 vỉ x 4 viên)",
+    "description": "Trị cảm cúm, sốt, nghẹt mũi.",
+    "ingredients": "Paracetamol, Phenylephrin, Clorpheniramin",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 80,
+    "maxStock": 400,
+    "barcodes": [
+      "893460202201"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0022-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 150000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0022-VI",
+        "name": "Vỉ",
+        "conversionFactor": 4,
+        "price": 6000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0022-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0022-20240405-1",
+        "quantity": 200,
+        "mfgDate": {
+          "$date": "2024-04-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-04-05T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0022-20250310-2",
+        "quantity": 150,
+        "mfgDate": {
+          "$date": "2025-03-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-03-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0023",
+    "name": "Nature Made Vitamin E 400 IU (Lọ 100 viên)",
+    "description": "Bổ sung Vitamin E, đẹp da, chống oxy hóa.",
+    "ingredients": "Vitamin E 400 IU",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 30,
+    "maxStock": 90,
+    "barcodes": [
+      "893460202301"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0023-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 280000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0023-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 2800,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0023-20240701-1",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2024-07-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-07-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0024",
+    "name": "Alprazolam 0.5mg (Hộp 3 vỉ x 10 viên)",
+    "description": "Thuốc an thần, trị lo âu (kê đơn, kiểm soát đặc biệt).",
+    "ingredients": "Alprazolam 0.5mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 10,
+    "maxStock": 30,
+    "barcodes": [
+      "893460202401"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0024-HOP",
+        "name": "Hộp",
+        "conversionFactor": 30,
+        "price": 45000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0024-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 15000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0024-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0024-20241010-1",
+        "quantity": 15,
+        "mfgDate": {
+          "$date": "2024-10-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-10-10T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0024-20250501-2",
+        "quantity": 10,
+        "mfgDate": {
+          "$date": "2025-05-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-05-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0025",
+    "name": "Betadine 10% (Chai 125ml)",
+    "description": "Dung dịch sát khuẩn vết thương.",
+    "ingredients": "Povidone-Iodine 10%",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 100,
+    "maxStock": 300,
+    "barcodes": [
+      "893460202501"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0025-CHAI",
+        "name": "Chai",
+        "conversionFactor": 1,
+        "price": 35000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0025-20240315-1",
+        "quantity": 280,
+        "mfgDate": {
+          "$date": "2024-03-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-03-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0026",
+    "name": "Centrum Silver 50+ (Lọ 125 viên)",
+    "description": "Vitamin tổng hợp cho người trên 50 tuổi.",
+    "ingredients": "Vitamin (A, B, C, D, E, K), Khoáng chất",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 20,
+    "maxStock": 80,
+    "barcodes": [
+      "893460202601"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0026-LO",
+        "name": "Lọ",
+        "conversionFactor": 125,
+        "price": 500000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0026-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 4000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0026-20240808-1",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2024-08-08T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-08-08T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0026-20250225-2",
+        "quantity": 30,
+        "mfgDate": {
+          "$date": "2025-02-25T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-02-25T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0027",
+    "name": "Ciprofloxacin 500mg (Hộp 2 vỉ x 10 viên)",
+    "description": "Kháng sinh Quinolon (kê đơn).",
+    "ingredients": "Ciprofloxacin 500mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 15,
+    "maxStock": 60,
+    "barcodes": [
+      "893460202701"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0027-HOP",
+        "name": "Hộp",
+        "conversionFactor": 20,
+        "price": 70000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0027-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 35000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0027-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 3500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0027-20240914-1",
+        "quantity": 50,
+        "mfgDate": {
+          "$date": "2024-09-14T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-09-14T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0028",
+    "name": "Efferagan 500mg (Hộp 4 tuýp x 10 viên sủi)",
+    "description": "Giảm đau, hạ sốt (viên sủi).",
+    "ingredients": "Paracetamol 500mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 40,
+    "maxStock": 150,
+    "barcodes": [
+      "893460202801"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0028-HOP",
+        "name": "Hộp",
+        "conversionFactor": 40,
+        "price": 120000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0028-TUYP",
+        "name": "Tuýp",
+        "conversionFactor": 10,
+        "price": 30000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0028-VIENSUI",
+        "name": "Viên sủi",
+        "conversionFactor": 1,
+        "price": 3000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0028-20240707-1",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2024-07-07T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-07-07T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0028-20250125-2",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2025-01-25T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-01-25T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0029",
+    "name": "Collagen AEC 12000mg (Hộp 10 lọ)",
+    "description": "Bổ sung collagen, làm đẹp da.",
+    "ingredients": "Collagen thủy phân, Vitamin C",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 10,
+    "maxStock": 50,
+    "barcodes": [
+      "893460202901"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0029-HOP",
+        "name": "Hộp",
+        "conversionFactor": 10,
+        "price": 800000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0029-LO",
+        "name": "Lọ",
+        "conversionFactor": 1,
+        "price": 80000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0029-20241001-1",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2024-10-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-10-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0030",
+    "name": "Prednison 5mg (Lọ 200 viên)",
+    "description": "Thuốc Corticoid kháng viêm (kê đơn).",
+    "ingredients": "Prednisolone 5mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 30,
+    "maxStock": 100,
+    "barcodes": [
+      "893460203001"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0030-LO",
+        "name": "Lọ",
+        "conversionFactor": 200,
+        "price": 60000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0030-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 300,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0030-20240620-1",
+        "quantity": 50,
+        "mfgDate": {
+          "$date": "2024-06-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-20T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0030-20250210-2",
+        "quantity": 40,
+        "mfgDate": {
+          "$date": "2025-02-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-02-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0031",
+    "name": "Dầu gió xanh Thiên Thảo (Chai 24ml)",
+    "description": "Giảm đau đầu, sổ mũi, say tàu xe.",
+    "ingredients": "Menthol, Methyl Salicylate, Eucalyptol",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 200,
+    "maxStock": 1000,
+    "barcodes": [
+      "893460203101"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0031-CHAI",
+        "name": "Chai",
+        "conversionFactor": 1,
+        "price": 45000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0031-20240101-1",
+        "quantity": 900,
+        "mfgDate": {
+          "$date": "2024-01-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2029-01-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0032",
+    "name": "Sữa Ensure Gold (Lon 850g)",
+    "description": "Dinh dưỡng bổ sung cho người lớn tuổi, người bệnh.",
+    "ingredients": "Đạm, Chất béo, Vitamin, Khoáng chất",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 50,
+    "maxStock": 150,
+    "barcodes": [
+      "893460203201"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0032-LON",
+        "name": "Lon",
+        "conversionFactor": 1,
+        "price": 750000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0032-20240915-1",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2024-09-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-09-15T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0032-20250301-2",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2025-03-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-03-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0033",
+    "name": "Aspirin 81mg (Lọ 100 viên)",
+    "description": "Thuốc chống kết tập tiểu cầu (kê đơn).",
+    "ingredients": "Acid Acetylsalicylic 81mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 40,
+    "maxStock": 200,
+    "barcodes": [
+      "893460203301"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0033-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 60000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0033-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 600,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0033-20240810-1",
+        "quantity": 180,
+        "mfgDate": {
+          "$date": "2024-08-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-08-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0034",
+    "name": "Tiffy (Hộp 25 vỉ x 4 viên)",
+    "description": "Trị cảm cúm, sốt, ho, sổ mũi.",
+    "ingredients": "Paracetamol, Clorpheniramin, Phenylpropanolamin",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 100,
+    "maxStock": 500,
+    "barcodes": [
+      "893460203401"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0034-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 130000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0034-VI",
+        "name": "Vỉ",
+        "conversionFactor": 4,
+        "price": 5200,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0034-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1300,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0034-20240505-1",
+        "quantity": 250,
+        "mfgDate": {
+          "$date": "2024-05-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-05-05T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0034-20250115-2",
+        "quantity": 200,
+        "mfgDate": {
+          "$date": "2025-01-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-01-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0035",
+    "name": "One A Day Men's Health (Lọ 100 viên)",
+    "description": "Vitamin tổng hợp cho nam giới.",
+    "ingredients": "Vitamin, Khoáng chất (Kẽm, Selen...)",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 15,
+    "maxStock": 60,
+    "barcodes": [
+      "893460203501"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0035-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 450000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0035-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 4500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0035-20240712-1",
+        "quantity": 50,
+        "mfgDate": {
+          "$date": "2024-07-12T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-07-12T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0036",
+    "name": "Domperidon 10mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Điều trị nôn, buồn nôn.",
+    "ingredients": "Domperidone 10mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 30,
+    "maxStock": 150,
+    "barcodes": [
+      "893460203601"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0036-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 100000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0036-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 10000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0036-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0036-20241020-1",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2024-10-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-10-20T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0036-20250410-2",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2025-04-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-04-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0037",
+    "name": "Dầu cá Nature's Bounty 1200mg (Lọ 200 viên)",
+    "description": "Bổ sung Omega 3.",
+    "ingredients": "Dầu cá 1200mg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 20,
+    "maxStock": 80,
+    "barcodes": [
+      "893460203701"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0037-LO",
+        "name": "Lọ",
+        "conversionFactor": 200,
+        "price": 400000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0037-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 2000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0037-20240614-1",
+        "quantity": 70,
+        "mfgDate": {
+          "$date": "2024-06-14T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-14T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0038",
+    "name": "Telfast 180mg (Hộp 1 vỉ x 10 viên)",
+    "description": "Thuốc chống dị ứng thế hệ mới.",
+    "ingredients": "Fexofenadine 180mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 50,
+    "maxStock": 200,
+    "barcodes": [
+      "893460203801"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0038-HOP",
+        "name": "Hộp",
+        "conversionFactor": 10,
+        "price": 120000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0038-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 120000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0038-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 12000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0038-20240901-1",
+        "quantity": 100,
+        "mfgDate": {
+          "$date": "2024-09-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-09-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0038-20250501-2",
+        "quantity": 80,
+        "mfgDate": {
+          "$date": "2025-05-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-05-01T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0039",
+    "name": "Cephalexin 500mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Kháng sinh Cephalosporin (kê đơn).",
+    "ingredients": "Cephalexin 500mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 25,
+    "maxStock": 100,
+    "barcodes": [
+      "893460203901"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0039-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 180000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0039-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 18000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0039-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1800,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0039-20241105-1",
+        "quantity": 0,
+        "mfgDate": {
+          "$date": "2024-11-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-11-05T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0040",
+    "name": "Viên uống DHC rau củ (Gói 60 ngày)",
+    "description": "Bổ sung chất xơ từ rau củ.",
+    "ingredients": "Bột chiết xuất 32 loại rau củ",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 60,
+    "maxStock": 200,
+    "barcodes": [
+      "893460204001"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0040-GOI",
+        "name": "Gói",
+        "conversionFactor": 1,
+        "price": 250000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0040-20240820-1",
+        "quantity": 20,
+        "mfgDate": {
+          "$date": "2024-08-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-08-20T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0040-20250215-2",
+        "quantity": 20,
+        "mfgDate": {
+          "$date": "2025-02-15T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-02-15T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0041",
+    "name": "Diazepam 5mg (Hộp 10 vỉ x 10 viên)",
+    "description": "Thuốc an thần, gây ngủ (kê đơn, KSTT).",
+    "ingredients": "Diazepam 5mg",
+    "type": "THUOC_KE_DON",
+    "minStock": 10,
+    "maxStock": 40,
+    "barcodes": [
+      "893460204101"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0041-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 90000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0041-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 9000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0041-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 900,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0041-20240730-1",
+        "quantity": 35,
+        "mfgDate": {
+          "$date": "2024-07-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-07-30T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0042",
+    "name": "Urgo (Hộp 20 miếng)",
+    "description": "Băng dán cá nhân.",
+    "ingredients": "Băng vải co giãn, gạc",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 200,
+    "maxStock": 800,
+    "barcodes": [
+      "893460204201"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0042-HOP",
+        "name": "Hộp",
+        "conversionFactor": 20,
+        "price": 30000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0042-MIENG",
+        "name": "Miếng",
+        "conversionFactor": 1,
+        "price": 1500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0042-20240201-1",
+        "quantity": 400,
+        "mfgDate": {
+          "$date": "2024-02-01T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2029-02-01T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0042-20250110-2",
+        "quantity": 350,
+        "mfgDate": {
+          "$date": "2025-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2030-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0043",
+    "name": "Melatonin 10mg (Lọ 60 viên)",
+    "description": "Hỗ trợ điều hòa giấc ngủ.",
+    "ingredients": "Melatonin 10mg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 30,
+    "maxStock": 70,
+    "barcodes": [
+      "893460204301"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0043-LO",
+        "name": "Lọ",
+        "conversionFactor": 60,
+        "price": 240000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0043-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 4000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0043-20240909-1",
+        "quantity": 60,
+        "mfgDate": {
+          "$date": "2024-09-09T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-09-09T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0044",
+    "name": "Panadol Extra (Hộp 10 vỉ x 12 viên)",
+    "description": "Giảm đau, hạ sốt (chứa Cafein).",
+    "ingredients": "Paracetamol 500mg, Caffeine 65mg",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 100,
+    "maxStock": 500,
+    "barcodes": [
+      "893460204401"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0044-HOP",
+        "name": "Hộp",
+        "conversionFactor": 120,
+        "price": 216000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0044-VI",
+        "name": "Vỉ",
+        "conversionFactor": 12,
+        "price": 21600,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0044-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 1800,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0044-20240625-1",
+        "quantity": 250,
+        "mfgDate": {
+          "$date": "2024-06-25T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2027-06-25T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0044-20250305-2",
+        "quantity": 200,
+        "mfgDate": {
+          "$date": "2025-03-05T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-03-05T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0045",
+    "name": "Enervon-C (Hộp 10 vỉ x 10 viên)",
+    "description": "Bổ sung Vitamin B, C.",
+    "ingredients": "Vitamin B-complex, Vitamin C",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 50,
+    "maxStock": 300,
+    "barcodes": [
+      "893460204501"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0045-HOP",
+        "name": "Hộp",
+        "conversionFactor": 100,
+        "price": 200000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0045-VI",
+        "name": "Vỉ",
+        "conversionFactor": 10,
+        "price": 20000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0045-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 2000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0045-20240717-1",
+        "quantity": 280,
+        "mfgDate": {
+          "$date": "2024-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0046",
+    "name": "Nước muối sinh lý Natri Clorid 0.9% (Chai 500ml)",
+    "description": "Rửa mắt, mũi, súc miệng, rửa vết thương.",
+    "ingredients": "Natri Clorid 0.9%",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 300,
+    "maxStock": 1500,
+    "barcodes": [
+      "893460204601"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0046-CHAI",
+        "name": "Chai",
+        "conversionFactor": 1,
+        "price": 10000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0046-20241001-1",
+        "quantity": 700,
+        "mfgDate": {
+          "$date": "2024-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0046-20250515-2",
+        "quantity": 700,
+        "mfgDate": {
+          "$date": "2024-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0047",
+    "name": "Crest 3D White (Tuýp 116g)",
+    "description": "Kem đánh răng làm trắng răng.",
+    "ingredients": "Sodium Fluoride, Hydrated Silica",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 50,
+    "maxStock": 150,
+    "barcodes": [
+      "893460204701"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0047-TUYP",
+        "name": "Tuýp",
+        "conversionFactor": 1,
+        "price": 120000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0047-20240801-1",
+        "quantity": 140,
+        "mfgDate": {
+          "$date": "2024-01-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-10T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0048",
+    "name": "Strepsils (Hộp 24 viên ngậm)",
+    "description": "Viên ngậm sát khuẩn, giảm đau họng.",
+    "ingredients": "Amylmetacresol, Dichlorobenzyl Alcohol",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 150,
+    "maxStock": 600,
+    "barcodes": [
+      "893460204801"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0048-HOP",
+        "name": "Hộp",
+        "conversionFactor": 24,
+        "price": 60000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0048-VIENGAM",
+        "name": "Viên ngậm",
+        "conversionFactor": 1,
+        "price": 2500,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0048-20240920-1",
+        "quantity": 300,
+        "mfgDate": {
+          "$date": "2024-09-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-02T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0048-20250412-2",
+        "quantity": 250,
+        "mfgDate": {
+          "$date": "2025-04-12T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-02T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0049",
+    "name": "Viên uống mọc tóc Biotin 10000mcg (Lọ 100 viên)",
+    "description": "Hỗ trợ mọc tóc, móng chắc khỏe.",
+    "ingredients": "Biotin 10000mcg",
+    "type": "THUC_PHAM_CHUC_NANG",
+    "minStock": 20,
+    "maxStock": 80,
+    "barcodes": [
+      "893460204901"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0049-LO",
+        "name": "Lọ",
+        "conversionFactor": 100,
+        "price": 300000,
+        "isBase": false
+      },
+      {
+        "unitId": "DVT-0049-VIEN",
+        "name": "Viên",
+        "conversionFactor": 1,
+        "price": 3000,
+        "isBase": true
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0049-20240530-1",
+        "quantity": 0,
+        "mfgDate": {
+          "$date": "2024-05-30T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-02T00:00:00Z"
+        },
+        "isCancelled": false
+      }
+    ]
+  },
+  {
+    "_id": "SP-0050",
+    "name": "Phosphalugel (Hộp 26 gói)",
+    "description": "Thuốc chữ P, trị đau dạ dày.",
+    "ingredients": "Aluminium Phosphate 20%",
+    "type": "THUOC_KHONG_KE_DON",
+    "minStock": 80,
+    "maxStock": 250,
+    "barcodes": [
+      "893460205001"
+    ],
+    "units": [
+      {
+        "unitId": "DVT-0050-GOI",
+        "name": "Gói",
+        "conversionFactor": 1,
+        "price": 4000,
+        "isBase": true
+      },
+      {
+        "unitId": "DVT-0050-HOP",
+        "name": "Hộp",
+        "conversionFactor": 26,
+        "price": 104000,
+        "isBase": false
+      }
+    ],
+    "batches": [
+      {
+        "batchId": "LO-SP-0050-20240720-1",
+        "quantity": 240,
+        "mfgDate": {
+          "$date": "2024-07-20T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2026-01-02T00:00:00Z"
+        },
+        "isCancelled": false
+      },
+      {
+        "batchId": "LO-SP-0050-20250410-2",
+        "quantity": 200,
+        "mfgDate": {
+          "$date": "2025-04-10T00:00:00Z"
+        },
+        "expDate": {
+          "$date": "2028-04-10T00:00:00Z"
+        },
+        "isCancelled": true
+      }
+    ]
+  }
+]

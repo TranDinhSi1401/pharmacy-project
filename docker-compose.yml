@@ -1,4 +1,13 @@
 services:
+    frontend:
+        build: ./frontend
+        container_name: pharmacy-frontend
+        restart: unless-stopped
+        ports:
+            - "8082:80"
+        depends_on:
+            - spring-boot
+
     spring-boot:
         image: dinhsi1401/pharmacy:2.0
         container_name: pharmacy-backend
@@ -6,10 +15,14 @@ services:
         ports:
             - "8081:8081"
         environment:
+            MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
+            MONGODB_DATABASE: pharmacy
+            SPRING_MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
             SPRING_DATA_MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
             SPRING_DATA_MONGODB_DATABASE: pharmacy
         depends_on:
             - mongodb
+
     mongodb: 
         image: mongo:8  
         container_name: pharmacy-mongo

@@ -2,23 +2,17 @@
  * ============================================================
  * FILE: History.jsx — Trang Lịch sử Hóa đơn & Thống kê Doanh thu
  * ============================================================
+ * Chức năng:
+ *   Quản lý và phân tích doanh số bán hàng của nhà thuốc:
+ *   - Xem danh sách tất cả hóa đơn (lọc theo ngày, nhân viên, SĐT khách hàng)
+ *   - Theo dõi KPI: tổng hóa đơn, tổng doanh thu, giá trị trung bình/đơn
+ *   - Biểu đồ cột: xu hướng doanh thu theo ngày hoặc theo tháng
+ *   - Biểu đồ tròn: cơ cấu doanh thu theo nhóm thuốc
  *
- * 1. Mục tiêu chung:
- *    Trang này giải quyết bài toán QUẢN LÝ VÀ PHÂN TÍCH DOANH SỐ BÁN HÀNG
- *    của nhà thuốc. Người quản lý có thể:
- *    - Xem danh sách tất cả hóa đơn đã bán (lọc theo ngày, nhân viên, SĐT)
- *    - Theo dõi KPI: tổng hóa đơn, tổng doanh thu, giá trị trung bình/đơn
- *    - Trực quan hóa xu hướng doanh thu qua biểu đồ cột (theo ngày hoặc tháng)
- *    - Phân tích cơ cấu doanh thu theo nhóm thuốc qua biểu đồ tròn
- *
- * 2. Tư duy cốt lõi (Ý tưởng thuật toán):
- *    - "Lookup Map" (bảng băm): Thay vì duyệt mảng O(n) mỗi lần cần tìm
- *      tên nhân viên/khách hàng, ta xây bảng Map<id, object> để tra cứu O(1).
- *      Giống như tra từ điển theo chữ cái thay vì đọc từ đầu đến cuối.
- *    - React.useMemo(): "Ghi nhớ" kết quả tính toán. Chỉ tính lại khi dữ liệu
- *      đầu vào thực sự thay đổi, không tính lại khi click nút hay mở modal.
- *    - DRY (Don't Repeat Yourself): Logic tìm sản phẩm bị lặp 3 nơi, tách
- *      thành hàm resolveProduct() để dùng chung.
+ * Các kỹ thuật chính:
+ *   - Map (bảng băm): Tra cứu tên nhân viên/khách hàng/sản phẩm O(1)
+ *   - useMemo: Ghi nhớ kết quả tính toán, chỉ tính lại khi dữ liệu thay đổi
+ *   - Promise.allSettled: Gọi nhiều API đồng thời, 1 API lỗi không ảnh hưởng các API khác
  * ============================================================
  */
 import React, { useState, useEffect } from 'react';
@@ -32,15 +26,25 @@ import {
 } from 'lucide-react';
 import axios from '../api/axios';
 
+// Bảng màu cho biểu đồ tròn (PieChart)
 const COLORS = ['#ef4444', '#10b981', '#3b82f6', '#f59e0b'];
 
 const History = () => {
-  // Database States
-  const [invoices, setInvoices] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [customers, setCustomers] = useState([]);
 
+  // =============================================
+  // PHẦN 1: KHAI BÁO CÁC BIẾN TRẠNG THÁI (STATE)
+  // =============================================
+
+  // --- Dữ liệu từ Backend ---
+  const [invoices, setInvoices] = useState([]);    // Danh sách hóa đơn
+  const [products, setProducts] = useState([]);    // Danh sách sản phẩm
+  const [employees, setEmployees] = useState([]);  // Danh sách nhân viên
+  const [customers, setCustomers] = useState([]);  // Danh sách khách hàng
+
+  /**
+   * getFirstDayOfCurrentMonth — Lấy ngày đầu tháng hiện tại (định dạng YYYY-MM-DD)
+   * @returns {string} - VD: "2026-06-01"
+   */
   const getFirstDayOfCurrentMonth = () => {
     const now = new Date();
     const y = now.getFullYear();
@@ -48,6 +52,10 @@ const History = () => {
     return `${y}-${m}-01`;
   };
 
+  /**
+   * getCurrentDateStr — Lấy ngày hiện tại (định dạng YYYY-MM-DD)
+   * @returns {string} - VD: "2026-06-26"
+   */
   const getCurrentDateStr = () => {
     const now = new Date();
     const y = now.getFullYear();
@@ -56,13 +64,17 @@ const History = () => {
     return `${y}-${m}-${d}`;
   };
 
-  // Filter States
-  const [startDate, setStartDate] = useState(getFirstDayOfCurrentMonth());
-  const [endDate, setEndDate] = useState(getCurrentDateStr());
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState('');
-  const [searchPhone, setSearchPhone] = useState('');
+  // --- Bộ lọc hóa đơn ---
+  const [startDate, setStartDate] = useState(getFirstDayOfCurrentMonth()); // Từ ngày
+  const [endDate, setEndDate] = useState(getCurrentDateStr());              // Đến ngày
+  const [selectedYear, setSelectedYear] = useState('');                     // Lọc theo năm
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState('');         // Lọc theo nhân viên
+  const [searchPhone, setSearchPhone] = useState('');                       // Lọc theo SĐT khách
 
+  /**
+   * availableYears — Danh sách các năm có hóa đơn (dùng cho dropdown "Thống kê theo năm")
+   * Tự động tính từ dữ liệu hóa đơn thực tế.
+   */
   const availableYears = React.useMemo(() => {
     if (invoices.length === 0) return [new Date().getFullYear()];
     const years = invoices.map(inv => new Date(inv.createdDate).getFullYear());
@@ -75,6 +87,10 @@ const History = () => {
     return result;
   }, [invoices]);
 
+  /**
+   * handleStartDateChange / handleEndDateChange — Cập nhật ngày lọc
+   * Khi chọn ngày cụ thể → tự động tắt chế độ "lọc theo năm"
+   */
   const handleStartDateChange = (val) => {
     setStartDate(val);
     setSelectedYear('');
@@ -85,6 +101,10 @@ const History = () => {
     setSelectedYear('');
   };
 
+  /**
+   * handleYearChange — Chuyển đổi chế độ lọc theo năm
+   * Khi chọn năm → tắt lọc theo khoảng ngày. Khi bỏ chọn → quay về lọc theo tháng hiện tại.
+   */
   const handleYearChange = (val) => {
     setSelectedYear(val);
     if (val) {
@@ -96,22 +116,22 @@ const History = () => {
     }
   };
 
+  // --- Modal chi tiết hóa đơn ---
+  const [selectedInvoice, setSelectedInvoice] = useState(null);  // Hóa đơn đang xem chi tiết
+  const [showDetailModal, setShowDetailModal] = useState(false); // Hiển thị modal
 
-  // Selected Invoice Modal State
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
+  // =============================================
+  // PHẦN 2: TẢI DỮ LIỆU TỪ BACKEND
+  // =============================================
 
-  /* ============================================================
-   * MODULE: fetchData — Tải dữ liệu từ Backend
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Gọi 4 API cùng lúc để lấy: hóa đơn, sản phẩm, nhân viên, khách hàng.
+  /**
+   * fetchData — Gọi 4 API đồng thời để tải dữ liệu
    *
-   * 2. Tư duy cốt lõi:
-   *    Dùng Promise.allSettled() — gọi 4 API ĐỒNG THỜI (song song).
-   *    Khác Promise.all(): nếu 1 API lỗi, các API khác vẫn trả kết quả.
-   *    VD: API sản phẩm lỗi nhưng API hóa đơn vẫn hoạt động bình thường.
-   * ============================================================ */
+   * Cách hoạt động:
+   *   Dùng Promise.allSettled() gọi 4 API cùng lúc (song song).
+   *   Nếu 1 API lỗi, các API khác vẫn trả kết quả bình thường.
+   *   VD: API sản phẩm lỗi nhưng API hóa đơn vẫn hoạt động.
+   */
   const fetchData = async () => {
     try {
       const [invRes, prodRes, empRes, custRes] = await Promise.allSettled([
@@ -121,6 +141,7 @@ const History = () => {
         axios.get('/api/customers')
       ]);
 
+      // Lấy dữ liệu từ các API thành công, nếu thất bại thì dùng mảng rỗng
       const loadedInvoices = invRes.status === 'fulfilled' && Array.isArray(invRes.value.data) ? invRes.value.data : [];
       const loadedProducts = prodRes.status === 'fulfilled' && Array.isArray(prodRes.value.data)
         ? prodRes.value.data.map(prod => {
@@ -136,130 +157,134 @@ const History = () => {
       setEmployees(loadedEmployees);
       setCustomers(loadedCustomers);
     } catch (err) {
-      console.warn('API chưa sẵn sàng, dữ liệu lịch sử sẽ trống:', err.message);
+      console.warn('Không thể tải dữ liệu lịch sử:', err.message);
     }
   };
 
-  // Load Data
+  // Tải dữ liệu khi component hiển thị lần đầu
   useEffect(() => {
     fetchData();
   }, []);
 
-  /* ============================================================
-   * MODULE: Lookup Maps — Bảng tra cứu nhanh O(1)
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Khi hiển thị bảng hóa đơn, mỗi dòng cần tra tên nhân viên, tên khách
-   *    hàng, tên sản phẩm. Nếu dùng Array.find() mỗi lần → phải duyệt cả
-   *    mảng → chậm O(n). Với 100 hóa đơn × 3 lần tra = 300 lần duyệt mảng!
-   *
-   * 2. Tư duy cốt lõi:
-   *    Dùng cấu trúc dữ liệu Map (bảng băm / hash map):
-   *    - Bước 1: Xây bảng tra 1 lần duy nhất khi dữ liệu thay đổi
-   *      VD: Map { "NV-001" → {tên: "Nguyễn Văn A", ...} }
-   *    - Bước 2: Tra cứu bằng map.get("NV-001") → kết quả ngay O(1)
-   *
-   *    useMemo() đảm bảo Map chỉ xây lại khi mảng gốc thay đổi,
-   *    không xây lại khi người dùng click nút hay mở modal.
-   * ============================================================ */
+  // =============================================
+  // PHẦN 3: BẢNG TRA CỨU NHANH (MAP) — O(1)
+  // =============================================
 
-  // Map tra cứu nhân viên: employeeId → object nhân viên
-  // VD: employeeMap.get("NV-001") → { id: "NV-001", firstName: "A", lastName: "Nguyễn" }
+  /**
+   * employeeMap — Tra cứu nhân viên theo ID
+   * VD: employeeMap.get("NV-0001") → { id: "NV-0001", firstName: "A", lastName: "Nguyễn" }
+   */
   const employeeMap = React.useMemo(() => {
-    const map = new Map();                        // Tạo Map rỗng
-    employees.forEach(emp => map.set(emp.id, emp)); // Nạp từng nhân viên vào Map
+    const map = new Map();
+    employees.forEach(emp => map.set(emp.id, emp));
     return map;
-  }, [employees]); // Chỉ xây lại khi danh sách nhân viên thay đổi
+  }, [employees]);
 
-  // Map tra cứu khách hàng: customerId → object khách hàng
+  /** customerMap — Tra cứu khách hàng theo ID */
   const customerMap = React.useMemo(() => {
     const map = new Map();
     customers.forEach(cust => map.set(cust.id, cust));
     return map;
   }, [customers]);
 
-  // Map tra cứu sản phẩm: productId → object sản phẩm
+  /** productMap — Tra cứu sản phẩm theo ID */
   const productMap = React.useMemo(() => {
     const map = new Map();
     products.forEach(prod => map.set(prod.id, prod));
     return map;
   }, [products]);
 
-  /* --- Các hàm tiện ích tra cứu thông tin (dùng Map O(1)) --- */
-
+  /**
+   * getEmployeeName — Lấy họ tên nhân viên từ ID
+   * @param {string} id - Mã nhân viên (VD: "NV-0001")
+   * @returns {string} - Họ tên đầy đủ, hoặc trả về ID nếu không tìm thấy
+   */
   const getEmployeeName = (id) => {
-    const emp = employeeMap.get(id); // O(1) thay vì Array.find() O(n)
+    const emp = employeeMap.get(id);
     return emp ? `${emp.lastName} ${emp.firstName}` : id;
   };
 
+  /**
+   * getCustomerName — Lấy họ tên khách hàng từ ID
+   * @param {string} id - Mã khách hàng
+   * @returns {string} - Họ tên đầy đủ, hoặc "Khách Vãng Lai" nếu không tìm thấy
+   */
   const getCustomerName = (id) => {
     const cust = customerMap.get(id);
     return cust ? `${cust.lastName} ${cust.firstName}` : 'Khách Vãng Lai';
   };
 
+  /**
+   * getCustomerPhone — Lấy SĐT khách hàng từ ID
+   * @param {string} id - Mã khách hàng
+   * @returns {string} - Số điện thoại, hoặc "N/A" nếu không tìm thấy
+   */
   const getCustomerPhone = (id) => {
     const cust = customerMap.get(id);
     return cust ? cust.phone : 'N/A';
   };
 
-  /* ============================================================
-   * MODULE: resolveProduct — Tìm sản phẩm từ nhiều nguồn ID
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Trong hóa đơn, mỗi dòng chi tiết có thể chứa productId hoặc chỉ có
-   *    unitId. Ta cần tìm ra sản phẩm gốc từ bất kỳ thông tin nào có sẵn.
-   *    Logic này bị LẶP LẠI ở 3 nơi: biểu đồ tròn, modal chi tiết, receipt.
-   *    → Tách ra 1 hàm duy nhất theo nguyên tắc DRY.
+  // =============================================
+  // PHẦN 4: TÌM SẢN PHẨM TỪ CHI TIẾT HÓA ĐƠN
+  // =============================================
+
+  /**
+   * resolveProduct — Tìm sản phẩm gốc từ chi tiết hóa đơn
    *
-   * 2. Tư duy cốt lõi:
-   *    Chiến lược "thử lần lượt" (fallback chain):
-   *    Cách 1 → thất bại → thử Cách 2 → thất bại → thử Cách 3
-   * ============================================================ */
+   * @param {Object} detail - Một dòng chi tiết hóa đơn (có productId và/hoặc unitId)
+   * @returns {Object|null} - Sản phẩm tìm được, hoặc null
+   *
+   * Thử lần lượt 3 cách:
+   *   Cách 1: Tra trực tiếp bằng productId → nhanh nhất O(1)
+   *   Cách 2: Suy ra productId từ unitId (VD: "DVT-0011-VI" → "SP-0011")
+   *   Cách 3: Duyệt toàn bộ sản phẩm tìm unit khớp → chậm nhất O(n)
+   */
   const resolveProduct = (detail) => {
-    // Cách 1 (nhanh nhất): Tra trực tiếp bằng productId từ Map → O(1)
+    // Cách 1: Tra trực tiếp bằng productId
     if (detail.productId) {
       const found = productMap.get(detail.productId);
       if (found) return found;
     }
 
     // Cách 2: Suy ra productId từ unitId
-    // VD: unitId = "DVT-0011-VI" → tách lấy "0011" → productId = "SP-0011"
     if (detail.unitId) {
-      const parts = detail.unitId.split('-'); // ["DVT", "0011", "VI"]
+      const parts = detail.unitId.split('-');
       if (parts.length >= 2) {
-        const derivedProductId = `SP-${parts[1]}`; // → "SP-0011"
+        const derivedProductId = `SP-${parts[1]}`;
         const found = productMap.get(derivedProductId);
         if (found) return found;
       }
     }
 
-    // Cách 3 (chậm nhất, fallback cuối): Duyệt toàn bộ sản phẩm tìm unit khớp
+    // Cách 3: Duyệt toàn bộ sản phẩm (fallback cuối cùng)
     if (detail.unitId) {
       return products.find(p =>
         p.units && p.units.some(u => u.unitId === detail.unitId)
       ) || null;
     }
 
-    return null; // Không tìm thấy sản phẩm nào
+    return null;
   };
 
-  /* ============================================================
-   * MODULE: filteredInvoices — Lọc hóa đơn theo bộ lọc người dùng
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Lọc hóa đơn theo: khoảng ngày, năm, nhân viên bán, SĐT khách hàng.
-   *    Kết quả sau lọc được dùng cho: bảng danh sách, KPI, và cả 2 biểu đồ.
+  // =============================================
+  // PHẦN 5: LỌC HÓA ĐƠN THEO BỘ LỌC
+  // =============================================
+
+  /**
+   * filteredInvoices — Danh sách hóa đơn sau khi áp dụng bộ lọc
    *
-   * 2. Tư duy cốt lõi:
-   *    - Array.filter() với nhiều điều kiện AND (tất cả đều phải thỏa)
-   *    - Bọc trong useMemo → chỉ lọc lại khi bộ lọc hoặc dữ liệu thay đổi
-   *    - Không lọc lại khi mở modal, click nút xem chi tiết...
-   * ============================================================ */
+   * Các điều kiện lọc (AND - tất cả phải thỏa):
+   *   1. Theo khoảng ngày HOẶC theo năm
+   *   2. Theo nhân viên bán hàng
+   *   3. Theo SĐT khách hàng
+   *
+   * Dùng useMemo → chỉ lọc lại khi bộ lọc hoặc dữ liệu thay đổi
+   */
   const filteredInvoices = React.useMemo(() => {
     return invoices.filter(inv => {
       const createdDate = new Date(inv.createdDate);
 
-      // 1. Lọc theo Năm hoặc Lọc theo khoảng ngày lập hóa đơn
+      // Điều kiện 1: Lọc theo Năm hoặc Khoảng ngày
       if (selectedYear) {
         if (createdDate.getFullYear() !== parseInt(selectedYear)) {
           return false;
@@ -277,12 +302,12 @@ const History = () => {
         }
       }
 
-      // 2. Lọc theo ID nhân viên bán hàng
+      // Điều kiện 2: Lọc theo nhân viên
       if (selectedEmployeeId && inv.employeeId !== selectedEmployeeId) {
         return false;
       }
 
-      // 3. Lọc theo Số điện thoại của khách hàng mua hàng
+      // Điều kiện 3: Lọc theo SĐT khách hàng
       if (searchPhone.trim()) {
         const phone = getCustomerPhone(inv.customerId);
         if (!phone.includes(searchPhone.trim())) return false;
@@ -292,45 +317,45 @@ const History = () => {
     });
   }, [invoices, startDate, endDate, selectedYear, selectedEmployeeId, searchPhone, customers]);
 
-  // Tính toán các chỉ số thống kê (KPIs)
+  // =============================================
+  // PHẦN 6: TÍNH TOÁN CÁC CHỈ SỐ KPI
+  // =============================================
+
   const totalInvoicesCount = filteredInvoices.length;
   const totalRevenue = filteredInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
   const averageOrderValue = totalInvoicesCount > 0 ? totalRevenue / totalInvoicesCount : 0;
-  const totalCustomersRegistered = customers.length; // Số lượng khách hàng đăng ký tích lũy
+  const totalCustomersRegistered = customers.length;
 
-  /* ============================================================
-   * MODULE: dailyRevenueData — Dữ liệu biểu đồ doanh thu
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Chuẩn bị mảng dữ liệu cho biểu đồ cột (BarChart) Recharts.
-   *    Có 2 chế độ xem:
-   *    - Chế độ NĂM: hiển thị 12 cột theo tháng
-   *    - Chế độ KHOẢNG NGÀY: hiển thị cột theo từng ngày
+  // =============================================
+  // PHẦN 7: DỮ LIỆU BIỂU ĐỒ CỘT (DOANH THU)
+  // =============================================
+
+  /**
+   * dailyRevenueData — Mảng dữ liệu cho biểu đồ cột (BarChart)
    *
-   * 2. Tư duy cốt lõi:
-   *    - Chế độ Năm: Lọc hóa đơn theo năm → gom theo tháng → tính tổng
-   *    - Chế độ Ngày: Dùng filteredInvoices (đã lọc sẵn) → so khớp ngày
-   *    - useMemo cache kết quả, chỉ tính lại khi bộ lọc thay đổi
-   * ============================================================ */
+   * Có 2 chế độ:
+   *   - Chế độ NĂM (selectedYear): Hiển thị 12 cột theo tháng
+   *   - Chế độ KHOẢNG NGÀY: Hiển thị cột theo từng ngày
+   *
+   * @returns {Array} - Mảng [{ name: "Tháng 1", "Doanh thu": 500000 }, ...]
+   */
   const dailyRevenueData = React.useMemo(() => {
-    // Mode 1: Yearly view (selectedYear is set)
+    // Chế độ 1: Xem theo Năm → gom doanh thu theo tháng
     if (selectedYear) {
       const yearInt = parseInt(selectedYear);
       const invoicesInYear = invoices.filter(inv => {
-        const createdDate = new Date(inv.createdDate);
-        return createdDate.getFullYear() === yearInt;
+        return new Date(inv.createdDate).getFullYear() === yearInt;
       });
 
-      // Find the months that have sales in this year
+      // Tìm các tháng có doanh số
       const monthsWithSalesSet = new Set();
       invoicesInYear.forEach(inv => {
-        const createdDate = new Date(inv.createdDate);
-        monthsWithSalesSet.add(createdDate.getMonth() + 1); // 1-12
+        monthsWithSalesSet.add(new Date(inv.createdDate).getMonth() + 1);
       });
 
       const sortedMonths = Array.from(monthsWithSalesSet).sort((a, b) => a - b);
 
-      const data = sortedMonths.map(m => {
+      return sortedMonths.map(m => {
         const total = invoicesInYear
           .filter(inv => new Date(inv.createdDate).getMonth() + 1 === m)
           .filter(inv => {
@@ -343,16 +368,11 @@ const History = () => {
           })
           .reduce((sum, inv) => sum + inv.totalAmount, 0);
 
-        return {
-          name: `Tháng ${m}`,
-          'Doanh thu': total
-        };
+        return { name: `Tháng ${m}`, 'Doanh thu': total };
       });
-
-      return data;
     }
 
-    // Mode 2: Daily range view
+    // Chế độ 2: Xem theo khoảng ngày → doanh thu từng ngày
     if (!startDate || !endDate) return [];
 
     const start = new Date(startDate);
@@ -362,6 +382,7 @@ const History = () => {
 
     if (start > end) return [];
 
+    // Tạo danh sách các ngày trong khoảng
     const daysList = [];
     const current = new Date(start);
     while (current <= end) {
@@ -369,7 +390,8 @@ const History = () => {
       current.setDate(current.getDate() + 1);
     }
 
-    const dailyData = daysList.map(date => {
+    // Tính tổng doanh thu cho mỗi ngày
+    return daysList.map(date => {
       const day = date.getDate();
       const month = date.getMonth() + 1;
       const label = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}`;
@@ -386,27 +408,22 @@ const History = () => {
         return sum;
       }, 0);
 
-      return {
-        name: label,
-        'Doanh thu': total
-      };
+      return { name: label, 'Doanh thu': total };
     });
-
-    return dailyData;
   }, [filteredInvoices, invoices, selectedYear, startDate, endDate, selectedEmployeeId, searchPhone, customers]);
 
-  /* ============================================================
-   * MODULE: categoryData — Dữ liệu biểu đồ tròn nhóm thuốc
-   * ============================================================
-   * 1. Mục tiêu chung:
-   *    Phân tích doanh thu theo 3 nhóm: Thuốc kê đơn, Thuốc không kê đơn,
-   *    Thực phẩm chức năng. Kết quả hiển thị trên biểu đồ tròn (PieChart).
+  // =============================================
+  // PHẦN 8: DỮ LIỆU BIỂU ĐỒ TRÒN (NHÓM THUỐC)
+  // =============================================
+
+  /**
+   * categoryData — Phân tích doanh thu theo nhóm thuốc
    *
-   * 2. Tư duy cốt lõi:
-   *    - Duyệt qua chi tiết hóa đơn → dùng resolveProduct() tìm loại thuốc
-   *    - Cộng dồn doanh thu vào đúng nhóm (object categoryTotals)
-   *    - Cuối cùng chuyển sang format Recharts: [{name, value}, ...]
-   * ============================================================ */
+   * Duyệt chi tiết hóa đơn → dùng resolveProduct() tìm loại thuốc
+   * → cộng dồn doanh thu vào nhóm tương ứng.
+   *
+   * @returns {Array} - Mảng [{ name: "Thuốc kê đơn", value: 1000000 }, ...]
+   */
   const categoryData = React.useMemo(() => {
     const categoryTotals = {
       THUOC_KE_DON: 0,
@@ -416,31 +433,30 @@ const History = () => {
 
     filteredInvoices.forEach(inv => {
       inv.details.forEach(item => {
-        // Dùng helper resolveProduct() thay vì lặp lại 14 dòng code tìm sản phẩm
-        // (nguyên tắc DRY — xem định nghĩa hàm ở phần Lookup Maps phía trên)
         const prod = resolveProduct(item);
-
         const cat = prod ? prod.type : 'OTHER';
         const lineTotal = item.price * item.quantity;
 
         if (categoryTotals[cat] !== undefined) {
           categoryTotals[cat] += lineTotal;
         } else {
-          // Lô hàng mặc định xếp vào thuốc không kê đơn nếu không khớp danh mục
+          // Mặc định xếp vào "thuốc không kê đơn" nếu không khớp danh mục
           categoryTotals.THUOC_KHONG_KE_DON += lineTotal;
         }
       });
     });
 
-    // Định dạng cấu trúc đầu ra phù hợp với biểu đồ PieChart của thư viện Recharts
+    // Chuyển sang định dạng Recharts, chỉ giữ nhóm có doanh thu > 0
     return [
       { name: 'Thuốc kê đơn', value: categoryTotals.THUOC_KE_DON },
       { name: 'Thuốc không kê đơn', value: categoryTotals.THUOC_KHONG_KE_DON },
       { name: 'Thực phẩm chức năng', value: categoryTotals.THUC_PHAM_CHUC_NANG }
-    ].filter(item => item.value > 0); // Chỉ hiển thị các nhóm có doanh thu thực tế
+    ].filter(item => item.value > 0);
   }, [filteredInvoices, products]);
 
-  // Reset all filters
+  /**
+   * handleClearFilters — Xóa tất cả bộ lọc, quay về mặc định (tháng hiện tại)
+   */
   const handleClearFilters = () => {
     setStartDate(getFirstDayOfCurrentMonth());
     setEndDate(getCurrentDateStr());
@@ -449,14 +465,18 @@ const History = () => {
     setSearchPhone('');
   };
 
+  // =============================================
+  // PHẦN 9: GIAO DIỆN (JSX)
+  // =============================================
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-slate-950">
 
-      {/* Liquid Glass Background Blobs */}
+      {/* Hiệu ứng nền trang trí */}
       <div className="absolute top-[5%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/8 to-teal-500/4 blur-3xl pointer-events-none animate-liquid-1 z-0"></div>
       <div className="absolute bottom-[5%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-teal-500/8 to-emerald-500/4 blur-3xl pointer-events-none animate-liquid-2 z-0"></div>
 
-      {/* Page Header */}
+      {/* Tiêu đề trang */}
       <div>
         <h2 className="text-xl font-bold tracking-wide text-slate-100">Lịch sử Hóa đơn & Thống kê doanh thu</h2>
         <p className="text-xs text-slate-400 mt-1">
@@ -464,10 +484,10 @@ const History = () => {
         </p>
       </div>
 
-      {/* KPI METRICS GRID */}
+      {/* ==================== KHỐI KPI ==================== */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
 
-        {/* KPI: Total Invoices */}
+        {/* KPI: Tổng số hóa đơn */}
         <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
             <FileText className="w-6 h-6" />
@@ -478,7 +498,7 @@ const History = () => {
           </div>
         </div>
 
-        {/* KPI: Total Revenue */}
+        {/* KPI: Tổng doanh thu */}
         <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <DollarSign className="w-6 h-6" />
@@ -489,7 +509,7 @@ const History = () => {
           </div>
         </div>
 
-        {/* KPI: Average Order Value */}
+        {/* KPI: Doanh thu trung bình mỗi đơn */}
         <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
             <ShoppingBag className="w-6 h-6" />
@@ -500,7 +520,7 @@ const History = () => {
           </div>
         </div>
 
-        {/* KPI: Total Customers */}
+        {/* KPI: Số khách hàng đăng ký */}
         <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
             <Users className="w-6 h-6" />
@@ -513,14 +533,14 @@ const History = () => {
 
       </div>
 
-      {/* FILTER PANEL */}
+      {/* ==================== BỘ LỌC HÓA ĐƠN ==================== */}
       <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-30 backdrop-blur-md space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-300">
           <Filter className="w-4 h-4 text-emerald-400" />
           Bộ lọc hóa đơn
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-          {/* Start Date */}
+          {/* Từ ngày */}
           <div>
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 pl-1">
               Từ ngày
@@ -538,7 +558,7 @@ const History = () => {
             </div>
           </div>
 
-          {/* End Date */}
+          {/* Đến ngày */}
           <div>
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 pl-1">
               Đến ngày
@@ -556,7 +576,7 @@ const History = () => {
             </div>
           </div>
 
-          {/* Year selection dropdown */}
+          {/* Thống kê theo năm */}
           <div>
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 pl-1">
               Thống kê theo năm
@@ -580,7 +600,7 @@ const History = () => {
             </div>
           </div>
 
-          {/* Cashier selection dropdown */}
+          {/* Lọc theo nhân viên */}
           <div>
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 pl-1">
               Nhân viên bán
@@ -604,7 +624,7 @@ const History = () => {
             </div>
           </div>
 
-          {/* Customer lookup phone search */}
+          {/* Tìm theo SĐT khách hàng */}
           <div>
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1 pl-1">
               SĐT khách hàng
@@ -624,7 +644,7 @@ const History = () => {
           </div>
         </div>
 
-        {/* Clear filter triggers */}
+        {/* Nút xóa bộ lọc */}
         <div className="flex justify-end pt-0.5">
           <button
             onClick={handleClearFilters}
@@ -635,10 +655,10 @@ const History = () => {
         </div>
       </div>
 
-      {/* CHARTS CONTAINER SECTION */}
+      {/* ==================== BIỂU ĐỒ ==================== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        {/* Daily Revenue Bar Chart (col-span-2) */}
+        {/* Biểu đồ cột: Xu hướng doanh thu */}
         <div className="md:col-span-2 p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex flex-col h-64">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pl-1">Xu hướng Doanh thu hàng ngày</h3>
           <div className="flex-1 w-full text-xs font-medium">
@@ -661,7 +681,7 @@ const History = () => {
           </div>
         </div>
 
-        {/* Product Category Revenue Pie Chart (col-span-1) */}
+        {/* Biểu đồ tròn: Cơ cấu nhóm thuốc */}
         <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 flex flex-col h-64">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pl-1">Cơ cấu Doanh thu nhóm thuốc</h3>
           <div className="flex-1 w-full text-xs font-medium relative">
@@ -693,7 +713,7 @@ const History = () => {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Labels legend representation list */}
+                {/* Chú giải biểu đồ */}
                 <div className="space-y-1 bg-slate-950/40 p-2 rounded-xl border border-slate-800/40 text-[9px]">
                   {categoryData.map((entry, index) => (
                     <div key={entry.name} className="flex justify-between items-center">
@@ -712,7 +732,7 @@ const History = () => {
 
       </div>
 
-      {/* INVOICES TABLE VIEW GRID */}
+      {/* ==================== BẢNG DANH SÁCH HÓA ĐƠN ==================== */}
       <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900 bg-opacity-40 overflow-hidden flex flex-col">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pl-1">Danh sách hóa đơn giao dịch</h3>
 
@@ -781,12 +801,12 @@ const History = () => {
         </div>
       </div>
 
-      {/* DETAIL MODAL DRILL DOWN VIEW */}
+      {/* ==================== MODAL CHI TIẾT HÓA ĐƠN ==================== */}
       {showDetailModal && selectedInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-opacity-80 p-4">
           <div className="relative w-full max-w-lg glass-panel rounded-2xl shadow-2xl p-5 border border-slate-800 animate-fade-in max-h-[90vh] overflow-y-auto">
 
-            {/* Modal close */}
+            {/* Nút đóng modal */}
             <button
               onClick={() => {
                 setShowDetailModal(false);
@@ -797,7 +817,7 @@ const History = () => {
               <X className="w-4 h-4" />
             </button>
 
-            {/* Modal title */}
+            {/* Tiêu đề modal */}
             <div className="flex items-center gap-2 pb-4 border-b border-slate-850">
               <FileText className="w-5 h-5 text-emerald-400" />
               <div>
@@ -808,7 +828,7 @@ const History = () => {
               </div>
             </div>
 
-            {/* General context */}
+            {/* Thông tin nhân viên & khách hàng */}
             <div className="grid grid-cols-2 gap-4 py-4 border-b border-slate-850 text-xs">
               <div className="space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-500 block">Thông tin nhân viên</span>
@@ -828,12 +848,11 @@ const History = () => {
               </div>
             </div>
 
-            {/* Items details table */}
+            {/* Danh sách sản phẩm đã mua */}
             <div className="py-4 border-b border-slate-850">
               <span className="text-[10px] uppercase font-bold text-slate-500 block mb-3 pl-1">Danh sách sản phẩm mua</span>
               <div className="max-h-48 overflow-y-auto space-y-2.5 pr-1.5">
                 {selectedInvoice.details.map((item, idx) => {
-                  // Dùng helper resolveProduct() — DRY, tránh lặp lại 14 dòng code
                   const productObj = resolveProduct(item);
                   const unitName = productObj ? productObj.units.find(u => u.unitId === item.unitId)?.name : 'Viên';
                   return (
@@ -857,16 +876,8 @@ const History = () => {
               </div>
             </div>
 
-            {/* Totals & Payments summaries */}
+            {/* Tổng tiền & Phương thức thanh toán */}
             <div className="pt-4 space-y-2.5 text-xs">
-
-              {selectedInvoice.redeemedPoints > 0 && (
-                <div className="flex justify-between text-yellow-500 font-medium">
-                  <span>Khấu trừ điểm tích lũy:</span>
-                  <span className="font-mono">-{(selectedInvoice.redeemedPoints * 1000).toLocaleString()}đ</span>
-                </div>
-              )}
-
               <div className="flex justify-between text-slate-100 font-bold text-sm">
                 <span>Tổng tiền thực nhận:</span>
                 <span className="font-mono text-emerald-400 text-base">
@@ -887,7 +898,6 @@ const History = () => {
                   </span>
                 )}
               </div>
-
             </div>
 
           </div>
