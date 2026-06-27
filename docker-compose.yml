@@ -1,6 +1,6 @@
 services:
     frontend:
-        build: ./frontend
+        image: vokhoaecho/pharmacy-frontend:2.0
         container_name: pharmacy-frontend
         restart: unless-stopped
         ports:

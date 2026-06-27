@@ -1,4 +1,4 @@
-# Hướng Dẫn Triển Khai Hệ Thống Quản Lý Bán Hàng & POS Dược An Khang Lên Ubuntu Server.
+# Hướng Dẫn Triển Khai Hệ Thống Quản Lý Bán Hàng & POS Dược An Khang Lên Ubuntu Server..
 
 Tài liệu này hướng dẫn chi tiết từng bước cách chuyển mã nguồn dự án từ máy tính Windows sang máy ảo Ubuntu Server, cấu hình chạy Docker và nạp cơ sở dữ liệu để chạy thử ứng dụng.
 
