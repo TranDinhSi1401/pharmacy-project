@@ -17,8 +17,6 @@ services:
         environment:
             MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
             MONGODB_DATABASE: pharmacy
-            SPRING_MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
-            SPRING_DATA_MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
             SPRING_DATA_MONGODB_DATABASE: pharmacy
         depends_on:
             - mongodb
