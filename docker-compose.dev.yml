@@ -1,0 +1,17 @@
+services:
+    frontend:
+        ports:
+            - "8082:80"
+            restart: unless-stopped
+    
+    # map port Spring ra ngoài để test api
+    spring-boot:
+        ports:
+            - "8081:8081"
+        restart: unless-stopped
+        
+    # map port Mongo ra ngoài để dùng DB Tool (DbSchema, Compass...) kiểm tra:
+    mongodb:
+        ports:
+            - "27017:27017"
+        restart: unless-stopped
