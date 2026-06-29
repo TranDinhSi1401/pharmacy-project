@@ -12,8 +12,6 @@ services:
         image: dinhsi1401/pharmacy:2.0
         container_name: pharmacy-backend
         restart: unless-stopped
-        ports:
-            - "8081:8081"
         environment:
             MONGODB_URI: mongodb://root:root@mongodb:27017/pharmacy?authSource=admin
             MONGODB_DATABASE: pharmacy
@@ -29,8 +27,6 @@ services:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: root
           MONGO_INITDB_DATABASE: pharmacy
-        ports:
-          - "27017:27017" 
         volumes:
           - mongo-data:/data/db 
           
