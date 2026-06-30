@@ -185,16 +185,25 @@ sudo docker compose up -d --build
     4. Hợp nhất cấu hình thành đặc tả hệ thống cuối cùng.
 
 #### B. Sơ đồ 1 (Sequence Diagram) - Trình tự thời gian và luồng dữ liệu
-Sơ đồ dưới đây thể hiện cách thức Docker Client gửi thông tin qua REST API, kiểm tra và tải các image từ Docker Hub, sau đó so sánh cấu hình và khởi chạy các container theo thứ tự phụ thuộc.
+Sơ đồ dưới đây thể hiện quy trình khép kín: Lập trình viên đóng gói và phát hành (build & push) các Docker Image lên Docker Hub, sau đó DevOps Engineer chạy lệnh triển khai (pull & run) các container theo đúng thứ tự phụ thuộc.
 
 ```mermaid
 sequenceDiagram
     autonumber
+    actor Dev as Lập trình viên (Developer)
+    participant DevMachine as Docker ở Máy Dev
+    participant Registry as Docker Hub (Registry)
     actor Admin as DevOps Engineer / System Admin
     participant Client as Docker Client (CLI)
     participant Daemon as Docker Daemon (Engine)
-    participant Registry as Docker Registry (Hub)
 
+    Note over Dev, DevMachine: GIAI ĐOẠN ĐÓNG GÓI & PHÁT HÀNH (DEVELOPER)
+    Dev->>DevMachine: Code ứng dụng & Dockerfile
+    DevMachine->>DevMachine: Build Docker Image từ Dockerfile
+    DevMachine->>Registry: Push các image lên Docker Hub (frontend, backend)
+    Registry-->>DevMachine: Xác nhận lưu trữ thành công các Layers
+
+    Note over Admin, Daemon: GIAI ĐOẠN TRIỂN KHAI (DEVOPS)
     Admin->>Client: Chạy `sudo docker compose up -d --build`
     activate Client
     
@@ -207,7 +216,7 @@ sequenceDiagram
     Client->>Daemon: Kiểm tra sự tồn tại của các image (frontend:2.0, backend:2.0, mongo:8)
     activate Daemon
     alt Các image chưa có sẵn ở local
-        Daemon->>Registry: Pull các image từ Docker Hub
+        Daemon->>Registry: Pull các image từ Docker Hub (do Dev đã push lên)
         Registry-->>Daemon: Tải về các Layers của Image
     end
     Daemon-->>Client: Xác nhận các Images đã sẵn sàng ở local
