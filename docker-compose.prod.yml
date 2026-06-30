@@ -1,51 +1,41 @@
 services:
     frontend:
-        image: vokhoaecho/pharmacy-frontend:${FRONTEND_IMAGE_TAG}
-        container_name: pharmacy-frontend
         restart: unless-stopped
         ports:
-            - "8082:80"
-        depends_on:
-            - spring-boot
-        networks:
-            - frontend-net
+            - "80:80"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 256M
 
     spring-boot:
-        image: dinhsi1401/pharmacy:${SPRING_BOOT_IMAGE_TAG}
-        container_name: pharmacy-backend
         restart: unless-stopped
-        environment:
-            MONGODB_URI: ${MONGODB_URI}
-            MONGODB_DATABASE: ${MONGODB_DATABASE}
-        depends_on:
-            mongodb:
-                condition: service_healthy 
-        networks:
-            - frontend-net
-            - backend-net
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+        deploy:
+            resources:
+                limits:
+                    cpus: "1.0"
+                    memory: 768M
 
-    mongodb: 
-        image: mongo:8  
-        container_name: pharmacy-mongo
+    mongodb:
         restart: unless-stopped
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-            MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
-        healthcheck:
-            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-            interval: 10s
-            timeout: 5s
-            retries: 5
-            start_period: 20s
-        volumes:
-            - mongo-data:/data/db 
-        networks:
-            - backend-net
-          
-volumes:
-    mongo-data: 
-  
-networks:
-    frontend-net:
-    backend-net:
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+        deploy:
+            resources:
+                limits:
+                    cpus: "1.0"
+                    memory: 1G
