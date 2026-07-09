@@ -1,0 +1,94 @@
+[
+  {
+    "_id": "NV-0001",
+    "lastName": "Võ Tiến",
+    "firstName": "Khoa",
+    "phone": "0905123456",
+    "idCard": "001085001234",
+    "gender": true,
+    "birthDate": {
+      "$date": "2005-02-24T00:00:00Z"
+    },
+    "address": "123 Lê Duẩn, Quận Hải Châu, Đà Nẵng",
+    "isRetired": false,
+    "account": {
+      "passwordHash": "$2a$12$gn8WcfAE66kyqsl.Of78Uuafh8uhulZ3hWJuUphOEzoFnhSdAPRFq",
+      "isAdmin": false,
+      "isBatchManager": false,
+      "isLocked": false,
+      "email": "votienkhoa435@gmail.com",
+      "createdAt": {
+        "$date": "2025-01-01T08:00:00Z"
+      }
+    }
+  },
+  {
+    "_id": "NV-0002",
+    "lastName": "Hồ Minh",
+    "firstName": "Khang",
+    "phone": "0913789012",
+    "idCard": "001090005678",
+    "gender": true,
+    "birthDate": {
+      "$date": "1995-10-20T00:00:00Z"
+    },
+    "address": "456 Hùng Vương, Quận Thanh Khê, Đà Nẵng",
+    "isRetired": false,
+    "account": {
+      "passwordHash": "$2a$12$KGIFfbyWWaUqQVJ1tvtP4.xscY569jCSeajDN2G8ld0fvAutAv75u",
+      "isAdmin": true,
+      "isBatchManager": false,
+      "isLocked": false,
+      "email": "khangdz013@gmail.com",
+      "createdAt": {
+        "$date": "2025-01-01T08:01:00Z"
+      }
+    }
+  },
+  {
+    "_id": "NV-0003",
+    "lastName": "Nguyễn Khánh",
+    "firstName": "Quân",
+    "phone": "0988111222",
+    "idCard": "001200003344",
+    "gender": true,
+    "birthDate": {
+      "$date": "2000-02-01T00:00:00Z"
+    },
+    "address": "789 Ngô Quyền, Quận Sơn Trà, Đà Nẵng",
+    "isRetired": false,
+    "account": {
+      "passwordHash": "$2a$12$XR2GrxuO7qAlhaKDsKwebO.fcIKCMMUjnqrwBJ.s8aJ1sulKx2FA.",
+      "isAdmin": false,
+      "isBatchManager": true,
+      "isLocked": false,
+      "email": "nguyenkhanhquan9999@gmail.com",
+      "createdAt": {
+        "$date": "2025-01-01T08:02:00Z"
+      }
+    }
+  },
+  {
+    "_id": "NV-0004",
+    "lastName": "Trần Đình",
+    "firstName": "Sĩ",
+    "phone": "0977333444",
+    "idCard": "001198007788",
+    "gender": true,
+    "birthDate": {
+      "$date": "1998-11-30T00:00:00Z"
+    },
+    "address": "K120/05 Trần Cao Vân, Quận Thanh Khê, Đà Nẵng",
+    "isRetired": false,
+    "account": {
+      "passwordHash": "$2a$12$ZVKoL.rhx/8F/DDu5EWHzuof6GmslFqX3D7IEFS9b3NvZM7N.adN2",
+      "isAdmin": false,
+      "isBatchManager": false,
+      "isLocked": false,
+      "email": "tistis14012k5@gmail.com",
+      "createdAt": {
+        "$date": "2025-01-01T08:03:00Z"
+      }
+    }
+  }
+]

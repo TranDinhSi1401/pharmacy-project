@@ -1,0 +1,7 @@
+# Production
+deploy/prod/secrets/*
+deploy/prod/.env.prod
+
+# UAT
+deploy/uat/secrets/*
+deploy/uat/.env.uat
