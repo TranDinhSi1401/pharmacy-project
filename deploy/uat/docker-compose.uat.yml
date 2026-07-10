@@ -95,9 +95,9 @@ services:
                 reservations:
                     cpus: '1.0'
                     memory: 0.5G
-                placement:
-                    constraints:
-                        - node.role == manager
+            placement:
+                constraints:
+                    - node.role == manager
         networks:
             pharmacy-net:
                 aliases:
