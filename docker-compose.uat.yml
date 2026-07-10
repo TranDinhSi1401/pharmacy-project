@@ -1,0 +1,28 @@
+services:
+    frontend:
+        ports:
+            - "8080:80" # Cổng UAT dành cho kiểm thử viên truy cập
+        restart: unless-stopped
+        volumes:
+            - ./docker/nginx/nginx.uat.conf:/etc/nginx/conf.d/default.conf:ro
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 256M
+
+    spring-boot:
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 512M
+
+    mongodb:
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 512M
