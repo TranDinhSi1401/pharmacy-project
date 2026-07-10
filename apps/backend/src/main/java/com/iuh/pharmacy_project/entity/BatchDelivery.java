@@ -1,0 +1,14 @@
+package com.iuh.pharmacy_project.entity;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class BatchDelivery {
+    String batchId;
+    int quantity;
+}
