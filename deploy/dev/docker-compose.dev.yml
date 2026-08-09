@@ -1,0 +1,56 @@
+services:
+    # Service frontend sử dụng ReactJs  
+    frontend:
+        ports:
+            - "8082:80"
+        restart: unless-stopped
+        depends_on:
+            - spring-boot
+        networks:
+            - frontend-net
+    
+    # Service backend sử dụng Spring Boot    
+    spring-boot:
+        environment:
+            MONGODB_URI: ${MONGODB_URI}
+            MONGODB_DATABASE: ${MONGODB_DATABASE}
+            SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+        # Cho phép kết nối ra ngoài để dùng Postman 
+        ports:
+            - "8081:8081"
+        restart: unless-stopped
+        depends_on:
+            mongodb:
+                condition: service_healthy
+        networks:
+            - frontend-net
+            - backend-net
+            
+    # Service mongodb 
+    mongodb:
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+        # Cho phép kết nối ra ngoài để dùng công cụ như Mongo Compass
+        ports:
+            - "27017:27017"
+        restart: unless-stopped
+        volumes: 
+            - mongo_data_dev:/data/db
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - backend-net
+
+volumes:
+    mongo_data_dev:
+    
+networks:
+    frontend-net:
+    backend-net:
+    
+            
