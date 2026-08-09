@@ -3,6 +3,7 @@ package com.iuh.pharmacy_project.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,16 +20,38 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {"/auth/login", "/auth/introspect"};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/introspect"};
+    private final String[] PUBLIC_GET_ENDPOINTS = {"/products/**"};
 
     @Value("${jwt.signer.key}")
     private String signerKey;
 
+    /**
+     * Filter chain 1 (Order=1 - ưu tiên cao nhất):
+     * Cho phép PUBLIC_ENDPOINTS đi thẳng qua mà không cần bất kỳ xác thực nào.
+     * Không cấu hình oauth2ResourceServer → không có BearerTokenAuthenticationFilter
+     * → tránh lỗi 401 cho login và introspect.
+     */
+    @Bean
+    @Order(1)
+    public SecurityFilterChain publicFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .securityMatcher(PUBLIC_POST_ENDPOINTS)
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable);
+
+        return httpSecurity.build();
+    }
+
+    /**
+     * Filter chain 2 (Order mặc định - thấp hơn):
+     * Xử lý tất cả các request còn lại với JWT authentication.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        request.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                                 .anyRequest().authenticated()
                 );
 
