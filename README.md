@@ -36,4 +36,4 @@ kubectl exec -it mongodb-85c575dc67-nzj6v -- mongosh -u root -p SuperSecretPassw
 db.getSiblingDB('pharmacy').getCollectionNames().forEach(function(coll) {
   print(coll + ': ' + db.getSiblingDB('pharmacy').getCollection(coll).countDocuments() + ' bản ghi');
 });"
->>>>>>> Stashed changes
+
